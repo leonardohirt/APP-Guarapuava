@@ -1,13 +1,68 @@
 import { Stack } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { MotiView } from 'moti'; // Importando a biblioteca de animação
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 const listaCuriosidades = [
-  { id: 1, pergunta: "O que significa 'Guarapuava'?", resposta: "Vem do tupi-guarani: 'Guará' (lobo-guará) e 'Puava' (bravo ou barulho). Significa 'Lobo Bravo'.", cor: "#1c2e4a" },
-  { id: 2, pergunta: "Quem escreveu o hino?", resposta: "A letra é de Gilda Todeschini e a música de Bento Mossurunga. Uma obra prima da nossa cultura.", cor: "#004d40" },
-  { id: 3, pergunta: "O 'Pinheiro Magistral'", resposta: "A Araucária é o símbolo da nossa terra, representando a força e longevidade do nosso povo.", cor: "#3e2723" },
-  { id: 4, pergunta: "Capital do 3º Planalto", resposta: "Estamos a 1.100m de altitude, sendo uma das cidades mais altas e frias do Paraná.", cor: "#2c3e50" },
-  { id: 5, pergunta: "Partitura Original", resposta: "O manuscrito original da música está preservado no acervo do Museu Visconde de Guarapuava.", cor: "#b8860b" }
+  { 
+    id: 1, 
+    pergunta: "O que significa 'Guarapuava'?", 
+    resposta: "Vem do tupi-guarani: 'Guará' (lobo-guará) e 'Puava' (bravo ou barulho). Significa 'Lobo Bravo'.", 
+    cor: "#1c2e4a" 
+  },
+  { 
+    id: 2, 
+    pergunta: "Quem escreveu o hino?", 
+    resposta: "A letra é de Gilda Todeschini e a música de Bento Mossurunga. Uma obra prima da nossa cultura.", 
+    cor: "#004d40" 
+  },
+  { 
+    id: 3, 
+    pergunta: "O 'Pinheiro Magistral'", 
+    resposta: "A Araucária é o símbolo da nossa terra, representando a força e longevidade do nosso povo.", 
+    cor: "#3e2723" 
+  },
+  { 
+    id: 4, 
+    pergunta: "Capital do 3º Planalto", 
+    resposta: "Estamos a 1.100m de altitude, sendo uma das cidades mais altas e frias do Paraná.", 
+    cor: "#2c3e50" 
+  },
+  { 
+    id: 5, 
+    pergunta: "Partitura Original", 
+    resposta: "O manuscrito original da música está preservado no acervo do Museu Visconde de Guarapuava.", 
+    cor: "#b8860b" 
+  },
+  { 
+    id: 6, 
+    pergunta: "Capital do Malte", 
+    resposta: "Guarapuava abriga a maior maltaria da América Latina, sendo referência mundial na produção de cevada.", 
+    cor: "#4a3b00" 
+  },
+  { 
+    id: 7, 
+    pergunta: "O Salto São Francisco", 
+    resposta: "Com 196 metros de queda livre, é a maior queda d'água do Sul do Brasil e fica na nossa região.", 
+    cor: "#005a7d" 
+  },
+  { 
+    id: 8, 
+    pergunta: "A Lagoa das Lágrimas", 
+    resposta: "Antigamente chamada de 'Rocio', a Lagoa é o coração do centro da cidade e palco de muitas histórias.", 
+    cor: "#1c3d3d" 
+  },
+  { 
+    id: 9, 
+    pergunta: "Entreposto Comercial", 
+    resposta: "Pela nossa localização estratégica, fomos um ponto vital de parada para os tropeiros no século XIX.", 
+    cor: "#5d4037" 
+  },
+  { 
+    id: 10, 
+    pergunta: "A Menina Radiante", 
+    resposta: "Este apelido carinhoso vem de um dos versos do hino, exaltando a beleza e o brilho da nossa cidade.", 
+    cor: "#6a1b9a" 
+  }
 ];
 
 export default function Curiosidades() {

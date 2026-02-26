@@ -6,19 +6,19 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-<Stack.Screen 
-  options={{ 
-    title: "Início",
-    headerShown: true, 
-    headerStyle: { backgroundColor: "#0b1f3a" },
-    headerTintColor: "#fff",
-    headerRight: () => (
-      <TouchableOpacity onPress={() => router.push("/config")} style={{ marginRight: 15 }}>
-        <Text style={{ fontSize: 20 }}>⚙️</Text>
-      </TouchableOpacity>
-    ),
-  }} 
-/>
+      <Stack.Screen 
+        options={{ 
+          title: "Início",
+          headerShown: true, 
+          headerStyle: { backgroundColor: "#0b1f3a" },
+          headerTintColor: "#fff",
+          headerRight: () => (
+            <TouchableOpacity onPress={() => router.push("/config")} style={{ marginRight: 15 }}>
+              <Text style={{ fontSize: 20 }}>⚙️</Text>
+            </TouchableOpacity>
+          ),
+        }} 
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         
@@ -53,26 +53,30 @@ export default function Home() {
           <Text style={styles.menuLabel}>CONHEÇA MAIS</Text>
 
           {/* CARD LETRA */}
-          <Link href="/hino" asChild>
-            <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>Letra Completa</Text>
-                <Text style={styles.cardText}>Acompanhe os versos de Gilda Todeschini.</Text>
-              </View>
-              <Text style={styles.cardArrow}>→</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity 
+            style={styles.card} 
+            activeOpacity={0.7}
+            onPress={() => router.push("/hino")}
+          >
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>Letra Completa</Text>
+              <Text style={styles.cardText}>Acompanhe os versos de Gilda Todeschini.</Text>
+            </View>
+            <Text style={styles.cardArrow}>→</Text>
+          </TouchableOpacity>
 
           {/* CARD HISTÓRIA */}
-          <Link href="/historia" asChild>
-            <TouchableOpacity style={styles.card} activeOpacity={0.7}>
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>História e Símbolos</Text>
-                <Text style={styles.cardText}>A origem e curiosidades da composição.</Text>
-              </View>
-              <Text style={styles.cardArrow}>→</Text>
-            </TouchableOpacity>
-          </Link>
+          <TouchableOpacity 
+            style={styles.card} 
+            activeOpacity={0.7}
+            onPress={() => router.push("/historia")}
+          >
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>História e Símbolos</Text>
+              <Text style={styles.cardText}>A origem e curiosidades da composição.</Text>
+            </View>
+            <Text style={styles.cardArrow}>→</Text>
+          </TouchableOpacity>
 
           {/* CARD FOTOS HISTÓRICAS */}
           <TouchableOpacity 
@@ -81,33 +85,45 @@ export default function Home() {
             onPress={() => router.push("/fotos")}
           >
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>📸 Ontem e Hoje</Text>
+              <Text style={styles.cardTitle}>Ontem e Hoje</Text>
               <Text style={styles.cardText}>Veja a evolução de Guarapuava através de fotos.</Text>
             </View>
             <Text style={styles.cardArrow}>→</Text>
           </TouchableOpacity>
 
-          {/* NOVO CARD: CURIOSIDADES */}
+          {/* CARD CURIOSIDADES */}
           <TouchableOpacity 
             style={styles.card} 
             activeOpacity={0.7}
             onPress={() => router.push("/curiosidades")}
           >
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>💡 Você Sabia?</Text>
+              <Text style={styles.cardTitle}>Você Sabia?</Text>
               <Text style={styles.cardText}>Fatos fascinantes e rápidos sobre nossa terra.</Text>
             </View>
             <Text style={styles.cardArrow}>→</Text>
           </TouchableOpacity>
-          
+
+          {/* NOVO CARD: LENDAS URBANAS */}
+          <TouchableOpacity 
+            style={[styles.card, { borderColor: 'rgba(155, 89, 182, 0.4)', borderWidth: 1 }]} 
+            activeOpacity={0.7}
+            onPress={() => router.push("/lendas")}
+          >
+            <View style={styles.cardContent}>
+              <Text style={[styles.cardTitle, { color: '#9b59b6' }]}>Mistérios e Lendas</Text>
+              <Text style={styles.cardText}>As histórias que o povo conta através das gerações.</Text>
+            </View>
+            <Text style={[styles.cardArrow, { color: '#9b59b6' }]}>→</Text>
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.footerText}>Orgulho de ser Guarapuavano</Text>
+        <View style={{ height: 40 }} />
       </ScrollView>
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

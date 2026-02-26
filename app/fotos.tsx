@@ -46,6 +46,16 @@ const marcosHistoricos = [
     imagemAtual: require("../assets/images/historico/museu_novo.jpg"),
     fontes: "Patrimônio Cultural / Guia das Artes",
     ano: "Preservação da Identidade"
+  },
+
+   {
+    id: 5,
+    titulo: "Parque do Lago ",
+    descricao: "o Parque do Lago conta com uma paisagem encantadora e muitas atrações culturais.",
+    imagemAntiga: require("../assets/images/historico/lago_antigo.jpg"),
+    imagemAtual: require("../assets/images/historico/lago_novo.jpg"),
+    fontes: "Guarapuava Histórica / Paraná Central",
+    ano: "Memória vs Atualidade"
   }
 ];
 
