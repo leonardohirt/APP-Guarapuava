@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Hino Guarapuava",
+    "slug": "hino-guarapauva",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "hinoguarapauva",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.guarapuava.hino"
+    },
+    "android": {
+      "package": "com.guarapuava.hino",
+      "adaptiveIcon": {
+        "backgroundColor": "#0b1f3a",
+        "foregroundImage": "./assets/images/splash.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/icon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        
+        {
+          "image": "./assets/images/splash.png",
+          "imageWidth": 250,
+          "resizeMode": "contain",
+          "backgroundColor": "#0b1f3a"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "db711610-b44b-45e7-a046-3c738664b6e8"
+      }
+    }
+  }
+}
