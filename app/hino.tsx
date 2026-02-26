@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   scrollContent: {
-    paddingVertical: 100, // Espaço para a letra ativa não ficar presa no topo
+    paddingVertical: 100,
   },
   lyric: {
     fontSize: 18,
