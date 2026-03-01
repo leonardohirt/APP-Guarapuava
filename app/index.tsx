@@ -32,7 +32,7 @@ export default function Home() {
             Explore a história, a letra e teste seus conhecimentos sobre o símbolo da nossa terra.
           </Text>
 
-          {/* BOTÕES DE AÇÃO PRINCIPAIS */}
+          {/* BOTÕES DE AÇÃO PRINCIPAIS - O TRIO INSTITUCIONAL */}
           <View style={styles.actionContainer}>
             <Link href="/hino" asChild>
               <TouchableOpacity style={styles.primaryButton} activeOpacity={0.8}>
@@ -45,40 +45,34 @@ export default function Home() {
                 <Text style={styles.quizButtonText}>🏆 JOGAR QUIZ</Text>
               </TouchableOpacity>
             </Link>
+
+            {/* HISTÓRIA GANHANDO DESTAQUE NO TOPO */}
+            <Link href="/historia" asChild>
+              <TouchableOpacity style={styles.historyButton} activeOpacity={0.8}>
+                <Text style={styles.historyButtonText}>📜 HISTÓRIA E SÍMBOLOS</Text>
+              </TouchableOpacity>
+            </Link>
           </View>
         </View>
 
-        {/* SEÇÃO DE NAVEGAÇÃO (CARDS) */}
+{/* SEÇÃO DE NAVEGAÇÃO (CARDS) */}
         <View style={styles.menuContainer}>
-          <Text style={styles.menuLabel}>CONHEÇA MAIS</Text>
+          <Text style={styles.menuLabel}>EXPLORE MAIS</Text>
 
-          {/* CARD LETRA */}
+          {/* 1. CARD LETRA - Essencial para quem quer ler enquanto ouve */}
           <TouchableOpacity 
             style={styles.card} 
             activeOpacity={0.7}
             onPress={() => router.push("/hino")}
           >
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>Letra Completa</Text>
+              <Text style={styles.cardTitle}>Letra do Hino</Text>
               <Text style={styles.cardText}>Acompanhe os versos de Gilda Todeschini.</Text>
             </View>
             <Text style={styles.cardArrow}>→</Text>
           </TouchableOpacity>
 
-          {/* CARD HISTÓRIA */}
-          <TouchableOpacity 
-            style={styles.card} 
-            activeOpacity={0.7}
-            onPress={() => router.push("/historia")}
-          >
-            <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>História e Símbolos</Text>
-              <Text style={styles.cardText}>A origem e curiosidades da composição.</Text>
-            </View>
-            <Text style={styles.cardArrow}>→</Text>
-          </TouchableOpacity>
-
-          {/* CARD FOTOS HISTÓRICAS */}
+          {/* 2. CARD FOTOS HISTÓRICAS - O impacto visual da evolução */}
           <TouchableOpacity 
             style={styles.card} 
             activeOpacity={0.7}
@@ -91,7 +85,7 @@ export default function Home() {
             <Text style={styles.cardArrow}>→</Text>
           </TouchableOpacity>
 
-          {/* CARD CURIOSIDADES */}
+          {/* 3. CARD CURIOSIDADES - Fatos rápidos e educativos */}
           <TouchableOpacity 
             style={styles.card} 
             activeOpacity={0.7}
@@ -99,12 +93,12 @@ export default function Home() {
           >
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>Você Sabia?</Text>
-              <Text style={styles.cardText}>Fatos fascinantes e rápidos sobre nossa terra.</Text>
+              <Text style={styles.cardText}>Fatos fascinantes sobre nossa terra.</Text>
             </View>
             <Text style={styles.cardArrow}>→</Text>
           </TouchableOpacity>
 
-          {/* NOVO CARD: LENDAS URBANAS */}
+          {/* 4. CARD LENDAS - O fechamento com o mistério local */}
           <TouchableOpacity 
             style={[styles.card, { borderColor: 'rgba(155, 89, 182, 0.4)', borderWidth: 1 }]} 
             activeOpacity={0.7}
@@ -173,10 +167,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
   },
   primaryButtonText: {
     color: '#0b1f3a',
@@ -198,6 +188,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
     letterSpacing: 1,
   },
+  historyButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingVertical: 16,
+    borderRadius: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  historyButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 15,
+    letterSpacing: 1,
+  },
   menuContainer: {
     marginTop: 10,
   },
@@ -215,8 +219,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
   cardContent: {
     flex: 1,

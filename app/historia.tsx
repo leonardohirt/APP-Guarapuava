@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { MotiView } from 'moti';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -28,63 +29,101 @@ export default function Historia() {
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.title}>O Hino e seu Significado</Text>
-
-          <Text style={styles.paragraph}>
-            O Hino de Guarapuava, oficialmente adotado como hino municipal,
-            celebra poeticamente a natureza exuberante e o desenvolvimento
-            da cidade. A imagem do sol surgindo brilhante simboliza
-            um novo começo e um futuro promissor para todos os cidadãos.
-          </Text>
-
-          {/* GRID DE INFORMAÇÕES */}
-          <View style={styles.grid}>
-            <View style={styles.infoCard}>
-              <View style={styles.accentBar} />
-              <Text style={styles.infoTitle}>Compositores</Text>
-              <Text style={styles.infoText}>
-                <Text style={styles.bold}>Letra:</Text> Gilda Boscardim Todeschini{"\n"}
-                <Text style={styles.bold}>Música:</Text> Luiz Eulógio Zilli
-              </Text>
-            </View>
-
-            <View style={styles.infoCard}>
-              <View style={styles.accentBar} />
-              <Text style={styles.infoTitle}>Partitura Original</Text>
-              <Text style={styles.infoText}>
-                Exposta com honras no Museu Visconde de Guarapuava.
-              </Text>
-            </View>
-
-            <View style={styles.infoCard}>
-              <View style={styles.accentBar} />
-              <Text style={styles.infoTitle}>Uso Oficial</Text>
-              <Text style={styles.infoText}>
-                Executado em todas as cerimônias oficiais e eventos cívicos.
-              </Text>
-            </View>
-
-            <View style={styles.infoCard}>
-              <View style={styles.accentBar} />
-              <Text style={styles.infoTitle}>Localização</Text>
-              <Text style={styles.infoText}>
-                Região centro-sul do Paraná, o coração geográfico do estado.
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.quoteCard}>
-            <Text style={styles.paragraphHighlight}>
-              "Elementos como os campos verdejantes, os trigais dourados
-              e o vaqueiro simbolizam a tradição e a força da identidade local."
+          
+          {/* --- NOVA SEÇÃO: HISTÓRIA OFICIAL --- */}
+          <MotiView 
+            from={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 600 }}
+          >
+            <Text style={styles.title}>A Origem de Guarapuava</Text>
+            
+            <Text style={styles.paragraph}>
+              <Text style={styles.bold}>Guarapuava</Text> (do tupi-guarani: <Text style={{ fontStyle: 'italic' }}>guará</Text> lobo e <Text style={{ fontStyle: 'italic' }}>puava</Text>: bravo) foi o nome dado aos campos gerais descobertos em 1770, com área primitiva de 175.000 km².
             </Text>
-          </View>
 
-          <Text style={styles.paragraph}>
-            A cidade é retratada como "menina radiante" e "pérola do Oeste",
-            expressões que reforçam o profundo sentimento de orgulho e 
-            pertencimento do povo guarapuavano através das gerações.
-          </Text>
+            <View style={styles.historyCard}>
+              <View style={styles.accentBar} />
+              <Text style={styles.historyTitle}>A Real Expedição</Text>
+              <Text style={styles.infoText}>
+                O povoamento foi resultado de um processo iniciado no século XVIII pela <Text style={styles.bold}>Real Expedição de Conquista</Text>, comandada por Diogo Pinto de Azevedo Portugal, que chegou à região em <Text style={styles.bold}>17 de junho de 1810</Text>.
+              </Text>
+              <Text style={[styles.infoText, { marginTop: 10 }]}>
+                Nesta época, foi construído o <Text style={styles.bold}>Fortim Atalaia</Text>, que protegeu os povoadores dos ataques das tribos Camés, Votorões e Dorins.
+              </Text>
+            </View>
+
+            <Text style={styles.paragraph}>
+              Oficialmente, a cidade surgiu com a instalação da Freguesia de Nossa Senhora de Belém, em <Text style={styles.bold}>9 de dezembro de 1819</Text>. Elevou-se à categoria de cidade em <Text style={styles.bold}>12 de abril de 1871</Text>.
+            </Text>
+            
+            <View style={styles.divider} />
+          </MotiView>
+
+          {/* --- SEÇÃO ORIGINAL: SÍMBOLOS E HINO --- */}
+          <MotiView 
+            from={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 600, delay: 200 }}
+          >
+            <Text style={styles.title}>O Hino e seu Significado</Text>
+
+            <Text style={styles.paragraph}>
+              O Hino de Guarapuava, oficialmente adotado como hino municipal,
+              celebra poeticamente a natureza exuberante e o desenvolvimento
+              da cidade. A imagem do sol surgindo brilhante simboliza
+              um novo começo e um futuro promissor para todos os cidadãos.
+            </Text>
+
+            {/* GRID DE INFORMAÇÕES */}
+            <View style={styles.grid}>
+              <View style={styles.infoCard}>
+                <View style={styles.accentBar} />
+                <Text style={styles.infoTitle}>Compositores</Text>
+                <Text style={styles.infoText}>
+                  <Text style={styles.bold}>Letra:</Text> Gilda Boscardim Todeschini{"\n"}
+                  <Text style={styles.bold}>Música:</Text> Luiz Eulógio Zilli
+                </Text>
+              </View>
+
+              <View style={styles.infoCard}>
+                <View style={styles.accentBar} />
+                <Text style={styles.infoTitle}>Partitura Original</Text>
+                <Text style={styles.infoText}>
+                  Exposta com honras no Museu Visconde de Guarapuava.
+                </Text>
+              </View>
+
+              <View style={styles.infoCard}>
+                <View style={styles.accentBar} />
+                <Text style={styles.infoTitle}>Uso Oficial</Text>
+                <Text style={styles.infoText}>
+                  Executado em todas as cerimônias oficiais e eventos cívicos.
+                </Text>
+              </View>
+
+              <View style={styles.infoCard}>
+                <View style={styles.accentBar} />
+                <Text style={styles.infoTitle}>Localização</Text>
+                <Text style={styles.infoText}>
+                  Região centro-sul do Paraná, o coração geográfico do estado.
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.quoteCard}>
+              <Text style={styles.paragraphHighlight}>
+                "Elementos como os campos verdejantes, os trigais dourados
+                e o vaqueiro simbolizam a tradição e a força da identidade local."
+              </Text>
+            </View>
+
+            <Text style={styles.paragraph}>
+              A cidade é retratada como "menina radiante" e "pérola do Oeste",
+              expressões que reforçam o profundo sentimento de orgulho e 
+              pertencimento do povo guarapuavano através das gerações.
+            </Text>
+          </MotiView>
           
           {/* ESPAÇO FINAL */}
           <View style={{ height: 40 }} />
@@ -153,6 +192,27 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: "#FFD700",
     marginBottom: 24,
+  },
+  historyCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    padding: 20,
+    borderRadius: 14,
+    marginBottom: 24,
+    position: "relative",
+    overflow: "hidden",
+  },
+  historyTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFD700",
+    marginBottom: 12,
+    letterSpacing: 0.5,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "rgba(255, 215, 0, 0.2)",
+    marginVertical: 10,
+    marginBottom: 30,
   },
   grid: {
     flexDirection: "row",
