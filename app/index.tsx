@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
-    backgroundColor: colors.card,
+    backgroundColor: colors.cardGlass,
     padding: 20,
     borderRadius: 16,
     marginBottom: 16,
@@ -237,6 +237,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.cardBorder,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
   },
   cardContent: {
     flex: 1,
