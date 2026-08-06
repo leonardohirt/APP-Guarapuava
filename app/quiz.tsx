@@ -106,6 +106,7 @@ export default function Quiz() {
   const [finished, setFinished] = useState(false);
 
   const progressAnim = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef<ScrollView>(null);
 
   // Carregar recorde salvo
   useEffect(() => {
@@ -149,10 +150,16 @@ export default function Quiz() {
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
+
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 150);
   }
 
   async function nextQuestion() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion((prev) => prev + 1);
       setSelected(null);
@@ -175,6 +182,7 @@ export default function Quiz() {
     setSelected(null);
     setScore(0);
     setFinished(false);
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   }
 
   const currentData = questions[currentQuestion];
@@ -226,7 +234,11 @@ export default function Quiz() {
             />
           </View>
 
-          <ScrollView contentContainerStyle={styles.quizContent} showsVerticalScrollIndicator={false}>
+          <ScrollView 
+            ref={scrollViewRef}
+            contentContainerStyle={styles.quizContent} 
+            showsVerticalScrollIndicator={false}
+          >
             <Text style={styles.progressLabel}>
               Pergunta {currentQuestion + 1} de {questions.length}
             </Text>
