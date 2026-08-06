@@ -69,6 +69,8 @@ export default function Hino() {
   }
 
   useEffect(() => {
+    if (!isPlaying) return;
+
     const lineIndex = lyrics.findIndex(
       (line) => position >= line.start && position <= line.end
     );
@@ -76,11 +78,11 @@ export default function Hino() {
     if (lineIndex !== -1 && lineIndex !== currentLine) {
       setCurrentLine(lineIndex);
       scrollRef.current?.scrollTo({
-        y: lineIndex * 50, 
+        y: Math.max(0, lineIndex * 45 - 100), 
         animated: true,
       });
     }
-  }, [position]);
+  }, [position, isPlaying]);
 
   useEffect(() => {
     return () => {
