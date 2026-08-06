@@ -3,10 +3,18 @@ import { Stack } from "expo-router";
 import * as Speech from "expo-speech";
 import { MotiView } from "moti";
 import React, { useEffect, useState } from "react";
-import { Alert, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors } from "@/constants/colors";
 
-const listaLendas = [
+interface LendaItem {
+  id: number;
+  titulo: string;
+  autor: string;
+  historia: string;
+  cor: string;
+}
+
+const listaLendas: LendaItem[] = [
   { 
     id: 1, 
     titulo: "Lagoa das Lágrimas", 
@@ -32,6 +40,7 @@ const listaLendas = [
 
 export default function Lendas() {
   const [speakingId, setSpeakingId] = useState<number | null>(null);
+  const [lendaSelecionada, setLendaSelecionada] = useState<LendaItem | null>(null);
 
   useEffect(() => {
     return () => {
@@ -39,7 +48,7 @@ export default function Lendas() {
     };
   }, []);
 
-  const toggleSpeech = (item: any) => {
+  const toggleSpeech = (item: LendaItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (speakingId === item.id) {
       Speech.stop();
@@ -57,13 +66,18 @@ export default function Lendas() {
     }
   };
 
-  const mostrarDetalhes = (item: any) => {
+  const abrirLeitura = (item: LendaItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert(
-      item.titulo, 
-      `${item.historia}\n\n— Relatado por: ${item.autor}`, 
-      [{ text: "Concluir Leitura", style: "default" }]
-    );
+    setLendaSelecionada(item);
+  };
+
+  const fecharLeitura = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (speakingId) {
+      Speech.stop();
+      setSpeakingId(null);
+    }
+    setLendaSelecionada(null);
   };
 
   return (
@@ -76,7 +90,7 @@ export default function Lendas() {
       
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Contos da Nossa Terra</Text>
-        <Text style={styles.headerSubtitle}>Relatos que compõem o imaginário do nosso povo.</Text>
+        <Text style={styles.headerSubtitle}>Toque no card para abrir o leitor em tela cheia.</Text>
       </View>
 
       <View style={styles.list}>
@@ -89,16 +103,19 @@ export default function Lendas() {
           >
             <Pressable 
               style={[styles.card, { backgroundColor: item.cor }]}
-              onPress={() => mostrarDetalhes(item)}
+              onPress={() => abrirLeitura(item)}
             >
               <View style={styles.cardContent}>
                 <View style={styles.cardHeaderRow}>
                   <Text style={styles.cardTitle}>{item.titulo.toUpperCase()}</Text>
                   
-                  {/* BOTÃO NARRAR / LER EM VOZ ALTA */}
+                  {/* BOTÃO OUVIR NO CARD */}
                   <TouchableOpacity 
                     style={styles.speechButton}
-                    onPress={() => toggleSpeech(item)}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      toggleSpeech(item);
+                    }}
                     activeOpacity={0.7}
                   >
                     <Text style={styles.speechButtonText}>
@@ -115,7 +132,10 @@ export default function Lendas() {
                 
                 <View style={styles.divider} />
                 
-                <Text style={styles.cardReadMore}>Ler relato completo →</Text>
+                <View style={styles.cardFooterRow}>
+                  <Text style={styles.cardReadMore}>📖 LER HISTÓRIA COMPLETA</Text>
+                  <Text style={{ color: colors.gold, fontSize: 16 }}>→</Text>
+                </View>
               </View>
             </Pressable>
           </MotiView>
@@ -124,6 +144,61 @@ export default function Lendas() {
       
       <Text style={styles.footerText}>Fonte: Historiografia e Tradição Popular</Text>
       <View style={{ height: 40 }} />
+
+      {/* MODAL / LEITOR EM TELA CHEIA */}
+      <Modal
+        visible={!!lendaSelecionada}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={fecharLeitura}
+      >
+        <View style={styles.modalOverlay}>
+          {lendaSelecionada && (
+            <MotiView 
+              from={{ opacity: 0, translateY: 40 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              style={styles.modalContent}
+            >
+              {/* CABEÇALHO DO LEITOR */}
+              <View style={styles.modalHeader}>
+                <TouchableOpacity onPress={fecharLeitura} style={styles.backButton}>
+                  <Text style={styles.backButtonText}>← Fechar</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={styles.modalSpeechButton}
+                  onPress={() => toggleSpeech(lendaSelecionada)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={styles.modalSpeechButtonText}>
+                    {speakingId === lendaSelecionada.id ? "⏹️ PARAR VOZ" : "🔊 OUVIR EM VOZ ALTA"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.readerScroll}>
+                <Text style={styles.modalTitle}>{lendaSelecionada.titulo}</Text>
+                <View style={styles.authorBadge}>
+                  <Text style={styles.authorBadgeText}>✍️ Relatado por: {lendaSelecionada.autor}</Text>
+                </View>
+
+                <View style={styles.modalDivider} />
+
+                {/* HISTÓRIA PARÁGRAFO POR PARÁGRAFO */}
+                {lendaSelecionada.historia.split("\n\n").map((paragrafo, idx) => (
+                  <Text key={idx} style={styles.modalParagraph}>
+                    {paragrafo}
+                  </Text>
+                ))}
+
+                <TouchableOpacity style={styles.closeModalButton} onPress={fecharLeitura}>
+                  <Text style={styles.closeModalButtonText}>CONCLUIR LEITURA ✕</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </MotiView>
+          )}
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -136,7 +211,7 @@ const styles = StyleSheet.create({
   list: { paddingHorizontal: 20 },
   card: { 
     padding: 24, 
-    borderRadius: 14, 
+    borderRadius: 16, 
     marginBottom: 20, 
     borderLeftWidth: 4,
     borderLeftColor: colors.gold,
@@ -153,8 +228,8 @@ const styles = StyleSheet.create({
   cardTitle: { color: '#f1f5f9', fontSize: 18, fontWeight: 'bold', letterSpacing: 1, flex: 1 },
   speechButton: {
     backgroundColor: 'rgba(255, 215, 0, 0.2)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.gold,
@@ -165,9 +240,108 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: 'bold',
   },
-  cardAuthor: { color: colors.gold, fontSize: 11, fontWeight: '700', marginTop: 4, marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 },
+  cardAuthor: { color: colors.gold, fontSize: 11, fontWeight: '700', marginTop: 6, marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 },
   cardPreview: { color: '#94a3b8', fontSize: 14, lineHeight: 22, fontStyle: 'italic' },
-  divider: { height: 1, backgroundColor: 'rgba(148, 163, 184, 0.1)', marginVertical: 15 },
+  divider: { height: 1, backgroundColor: 'rgba(148, 163, 184, 0.15)', marginVertical: 16 },
+  cardFooterRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardReadMore: { color: colors.gold, fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 },
-  footerText: { textAlign: 'center', color: colors.textSubtle, fontSize: 11, marginTop: 30, letterSpacing: 1 }
+  footerText: { textAlign: 'center', color: colors.textSubtle, fontSize: 11, marginTop: 30, letterSpacing: 1 },
+
+  // ESTILOS DO LEITOR EM TELA CHEIA (MODAL)
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(7, 21, 39, 0.96)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    flex: 1,
+    backgroundColor: colors.backgroundDark,
+    marginTop: 50,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderColor: "rgba(255, 215, 0, 0.3)",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+  },
+  backButtonText: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  modalSpeechButton: {
+    backgroundColor: colors.gold,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  modalSpeechButtonText: {
+    color: colors.background,
+    fontSize: 12,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
+  },
+  readerScroll: {
+    paddingBottom: 40,
+  },
+  modalTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: colors.gold,
+    marginBottom: 8,
+    lineHeight: 34,
+  },
+  authorBadge: {
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(255, 215, 0, 0.12)",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    marginBottom: 16,
+  },
+  authorBadgeText: {
+    color: colors.gold,
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  modalDivider: {
+    height: 1,
+    backgroundColor: "rgba(255, 215, 0, 0.2)",
+    marginBottom: 20,
+  },
+  modalParagraph: {
+    color: "#e2e8f0",
+    fontSize: 16,
+    lineHeight: 26,
+    marginBottom: 18,
+  },
+  closeModalButton: {
+    backgroundColor: "rgba(255, 215, 0, 0.15)",
+    borderWidth: 1,
+    borderColor: colors.gold,
+    paddingVertical: 16,
+    borderRadius: 14,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  closeModalButtonText: {
+    color: colors.gold,
+    fontWeight: "bold",
+    fontSize: 14,
+    letterSpacing: 1,
+  }
 });
