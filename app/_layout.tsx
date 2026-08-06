@@ -14,9 +14,11 @@ export default function RootLayout() {
         screenOptions={{
           headerStyle: { backgroundColor: '#0b1f3a' },
           headerTintColor: '#fff',
+          headerTitleStyle: { fontWeight: 'bold' },
+          headerShadowVisible: false,
         }}
       />
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </ThemeProvider>
   );
 }
