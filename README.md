@@ -1,4 +1,4 @@
-# 🌲 App Hino de Guarapuava
+# 🌲 Guará-App
 
 Um projeto cultural interativo desenvolvido para preservar e promover a história, os símbolos e as lendas de Guarapuava, Paraná.
 

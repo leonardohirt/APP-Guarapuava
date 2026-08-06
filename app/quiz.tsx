@@ -1,5 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Haptics from "expo-haptics";
 import { Stack } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
   Animated,
@@ -10,8 +12,9 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import { colors } from "@/constants/colors";
 
-// --- FUNÇÕES AUXILIARES ---
+const STORAGE_KEY = "@guara_app_quiz_best";
 
 function shuffleArray<T>(array: T[]): T[] {
   const newArray = [...array];
@@ -22,71 +25,96 @@ function shuffleArray<T>(array: T[]): T[] {
   return newArray;
 }
 
-const allQuestions = [
+interface QuestionItem {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  explanation: string;
+}
+
+const allQuestions: QuestionItem[] = [
   {
     question: "Quem escreveu a letra do Hino de Guarapuava?",
     options: ["Luiz Eulógio Zilli", "Gilda Boscardim Todeschini", "Dom Pedro II", "Visconde de Guarapuava"],
     correctAnswer: "Gilda Boscardim Todeschini",
+    explanation: "A poetisa Gilda Boscardim Todeschini compôs a letra oficial exaltando a beleza e os valores de Guarapuava.",
   },
   {
     question: "Quem compôs a música do hino?",
     options: ["Luiz Eulógio Zilli", "Villa-Lobos", "Carlos Gomes", "Dom Pedro I"],
     correctAnswer: "Luiz Eulógio Zilli",
+    explanation: "O maestro Luiz Eulógio Zilli compôs a bela melodia erudita do hino municipal.",
   },
   {
     question: "Onde está exposta a partitura original do hino?",
     options: ["Na Câmara Municipal", "No Museu Visconde de Guarapuava", "Na Catedral", "Na Biblioteca Nacional"],
     correctAnswer: "No Museu Visconde de Guarapuava",
+    explanation: "A partitura original manuscrita está preservada no acervo histórico do Museu Visconde de Guarapuava.",
   },
   {
     question: "O hino exalta principalmente:",
     options: ["Tecnologia moderna", "Natureza e cultura local", "Indústria pesada", "Comércio exterior"],
     correctAnswer: "Natureza e cultura local",
+    explanation: "Os versos destacam os pinheirais, os campos verdejantes e o calor da cultura do povo guarapuavano.",
   },
   {
-    question: "A letra menciona qual elemento da natureza?",
+    question: "A letra menciona qual elemento da natureza no seu início?",
     options: ["Sol", "Neve", "Deserto", "Oceano"],
     correctAnswer: "Sol",
+    explanation: "O verso de abertura canta: 'O Sol surgiu, um dia, mais brilhante' trazendo luz e esperança.",
   },
   {
-    question: "Guarapuava é descrita como:",
+    question: "Guarapuava é poeticamente descrita como:",
     options: ["Uma fortaleza antiga", "Uma menina radiante", "Uma metrópole industrial", "Uma estrela distante"],
     correctAnswer: "Uma menina radiante",
+    explanation: "No hino, a cidade é carinhosamente chamada de 'menina radiante, com o ouro dos trigais a se enfeitar'.",
   },
   {
     question: "O hino celebra o quê?",
     options: ["Conquistas esportivas", "História e identidade da cidade", "Guerras antigas", "Riquezas minerais"],
     correctAnswer: "História e identidade da cidade",
+    explanation: "É um marco cívico de amor à terra, preservando a memória dos tropeiros e fundadores.",
   },
   {
     question: "O hino foi adotado oficialmente como:",
     options: ["Hino estadual", "Hino municipal", "Hino nacional", "Canção folclórica"],
     correctAnswer: "Hino municipal",
+    explanation: "É o símbolo sonoro oficial do município de Guarapuava executado em solenidades cívicas.",
   },
   {
-    question: "A partitura original foi entregue ao município em um ato de:",
+    question: "A partitura original foi preservada no município em um ato de:",
     options: ["Venda pública", "Resgate cultural", "Competição musical", "Doação anônima"],
     correctAnswer: "Resgate cultural",
+    explanation: "A preservação da partitura foi um importante resgate da memória musical da cidade.",
   },
   {
     question: "O hino representa principalmente:",
     options: ["Orgulho e identidade local", "Riqueza financeira", "Poder militar", "Expansão territorial"],
     correctAnswer: "Orgulho e identidade local",
+    explanation: "Representa a união e o sentimento de orgulho de pertencer à Terra do Lobo Bravo.",
   },
 ];
 
-// --- COMPONENTE PRINCIPAL ---
-
 export default function Quiz() {
-  const [questions, setQuestions] = useState(() =>
+  const [questions, setQuestions] = useState<QuestionItem[]>(() =>
     shuffleArray(allQuestions).slice(0, 5)
   );
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [score, setScore] = useState(0);
+  const [bestScore, setBestScore] = useState<number | null>(null);
   const [finished, setFinished] = useState(false);
 
   const progressAnim = useRef(new Animated.Value(0)).current;
+
+  // Carregar recorde salvo
+  useEffect(() => {
+    AsyncStorage.getItem(STORAGE_KEY).then((value) => {
+      if (value !== null) {
+        setBestScore(parseInt(value, 10));
+      }
+    });
+  }, []);
 
   const currentOptions = useMemo(() => {
     return shuffleArray(questions[currentQuestion].options);
@@ -100,15 +128,11 @@ export default function Quiz() {
     }).start();
   }, [currentQuestion]);
 
-  // Função de Compartilhar
   const handleShare = async () => {
     try {
-      const linkApp = ""; // Se subir no Drive, cole o link aqui
-      const mensagem = `Fiz o Quiz do Hino de Guarapuava e acertei ${score} de ${questions.length} perguntas! ✨\n\nConsegue fazer melhor? ${linkApp}`;
-      
-      await Share.share({
-        message: mensagem,
-      });
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      const mensagem = `Fiz o Quiz no Guará-App e acertei ${score} de ${questions.length} perguntas sobre Guarapuava! 🌲✨\n\nConsegue fazer melhor?`;
+      await Share.share({ message: mensagem });
     } catch (error) {
       Alert.alert("Erro", "Não foi possível compartilhar.");
     }
@@ -117,21 +141,34 @@ export default function Quiz() {
   function handleAnswer(option: string) {
     if (selected !== null) return;
     setSelected(option);
-    if (option === questions[currentQuestion].correctAnswer) {
+    
+    const isCorrect = option === questions[currentQuestion].correctAnswer;
+    if (isCorrect) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setScore((prev) => prev + 1);
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
   }
 
-  function nextQuestion() {
+  async function nextQuestion() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (currentQuestion + 1 < questions.length) {
       setCurrentQuestion((prev) => prev + 1);
       setSelected(null);
     } else {
       setFinished(true);
+      // Atualizar melhor pontuação
+      const finalScore = score + (selected === questions[currentQuestion].correctAnswer ? 1 : 0);
+      if (bestScore === null || finalScore > bestScore) {
+        setBestScore(finalScore);
+        await AsyncStorage.setItem(STORAGE_KEY, finalScore.toString());
+      }
     }
   }
 
   function restartQuiz() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     progressAnim.setValue(0);
     setQuestions(shuffleArray(allQuestions).slice(0, 5));
     setCurrentQuestion(0);
@@ -147,8 +184,8 @@ export default function Quiz() {
       <Stack.Screen
         options={{
           title: "Quiz Guarapuava",
-          headerStyle: { backgroundColor: "#0b1f3a" },
-          headerTintColor: "#fff",
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.text,
         }}
       />
 
@@ -159,13 +196,18 @@ export default function Quiz() {
             Você acertou {score} de {questions.length}
           </Text>
 
-          {/* BOTÃO COMPARTILHAR */}
+          {bestScore !== null && (
+            <View style={styles.bestScoreBadge}>
+              <Text style={styles.bestScoreText}>🏆 Sua Melhor Pontuação: {bestScore} / {questions.length}</Text>
+            </View>
+          )}
+
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>Compartilhar Resultado</Text>
+            <Text style={styles.shareButtonText}>Compartilhar Resultado 🚀</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.restartButton} onPress={restartQuiz}>
-            <Text style={styles.restartButtonText}>Jogar novamente</Text>
+            <Text style={styles.restartButtonText}>Jogar Novamente 🔄</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -184,7 +226,7 @@ export default function Quiz() {
             />
           </View>
 
-          <ScrollView contentContainerStyle={styles.quizContent}>
+          <ScrollView contentContainerStyle={styles.quizContent} showsVerticalScrollIndicator={false}>
             <Text style={styles.progressLabel}>
               Pergunta {currentQuestion + 1} de {questions.length}
             </Text>
@@ -195,16 +237,21 @@ export default function Quiz() {
               const isCorrect = option === currentData.correctAnswer;
               const isSelected = option === selected;
 
-              let backgroundColor = "#1c2e4a";
+              let backgroundColor = colors.card;
+              let borderColor = colors.cardBorder;
               if (selected !== null) {
-                if (isCorrect) backgroundColor = "#1f8a3d";
-                else if (isSelected) backgroundColor = "#8a1f1f";
+                if (isCorrect) {
+                  backgroundColor = colors.correct;
+                  borderColor = colors.gold;
+                } else if (isSelected) {
+                  backgroundColor = colors.incorrect;
+                }
               }
 
               return (
                 <TouchableOpacity
                   key={`${currentQuestion}-${index}`}
-                  style={[styles.optionButton, { backgroundColor }]}
+                  style={[styles.optionButton, { backgroundColor, borderColor }]}
                   onPress={() => handleAnswer(option)}
                   activeOpacity={selected ? 1 : 0.7}
                 >
@@ -213,10 +260,18 @@ export default function Quiz() {
               );
             })}
 
+            {/* CARD EXPLICATIVO */}
+            {selected !== null && (
+              <View style={styles.explanationCard}>
+                <Text style={styles.explanationTitle}>💡 Você sabia?</Text>
+                <Text style={styles.explanationText}>{currentData.explanation}</Text>
+              </View>
+            )}
+
             {selected !== null && (
               <TouchableOpacity style={styles.nextButton} onPress={nextQuestion}>
                 <Text style={styles.nextButtonText}>
-                  {currentQuestion + 1 === questions.length ? "Finalizar" : "Próxima Pergunta"}
+                  {currentQuestion + 1 === questions.length ? "Finalizar Quiz" : "Próxima Pergunta →"}
                 </Text>
               </TouchableOpacity>
             )}
@@ -227,25 +282,24 @@ export default function Quiz() {
   );
 }
 
-// --- ESTILOS ---
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0b1f3a",
+    backgroundColor: colors.background,
   },
   progressBarContainer: {
     height: 8,
-    backgroundColor: "#1c2e4a",
+    backgroundColor: colors.card,
     width: "100%",
   },
   progressBarFill: {
     height: "100%",
-    backgroundColor: "#FFD700",
+    backgroundColor: colors.gold,
   },
   quizContent: {
     padding: 24,
-    paddingTop: 30,
+    paddingTop: 20,
+    paddingBottom: 40,
   },
   centerContent: {
     flex: 1,
@@ -253,7 +307,7 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   progressLabel: {
-    color: "#aaa",
+    color: colors.textMuted,
     textAlign: "center",
     marginBottom: 10,
     fontSize: 14,
@@ -263,51 +317,85 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#fff",
+    color: colors.text,
     textAlign: "center",
     marginBottom: 10,
   },
   scoreText: {
-    fontSize: 22,
-    color: "#FFD700",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: colors.gold,
     textAlign: "center",
-    marginBottom: 40,
+    marginBottom: 20,
+  },
+  bestScoreBadge: {
+    backgroundColor: colors.goldLight,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    marginBottom: 30,
+    alignItems: "center",
+  },
+  bestScoreText: {
+    color: colors.gold,
+    fontWeight: "bold",
+    fontSize: 15,
   },
   questionText: {
-    fontSize: 24,
-    color: "#fff",
-    marginBottom: 30,
+    fontSize: 22,
+    color: colors.text,
+    marginBottom: 24,
     textAlign: "center",
     fontWeight: "600",
-    lineHeight: 32,
+    lineHeight: 30,
   },
   optionButton: {
     padding: 18,
     borderRadius: 14,
-    marginBottom: 14,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.05)",
   },
   optionText: {
-    color: "#fff",
+    color: colors.text,
     textAlign: "center",
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: "500",
   },
+  explanationCard: {
+    backgroundColor: colors.goldLight,
+    borderRadius: 14,
+    padding: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.gold,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  explanationTitle: {
+    color: colors.gold,
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  explanationText: {
+    color: colors.text,
+    fontSize: 14,
+    lineHeight: 20,
+  },
   nextButton: {
-    marginTop: 20,
-    backgroundColor: "#fff",
+    marginTop: 15,
+    backgroundColor: colors.gold,
     padding: 18,
     borderRadius: 14,
   },
   nextButtonText: {
     textAlign: "center",
     fontWeight: "bold",
-    color: "#0b1f3a",
+    color: colors.background,
     fontSize: 16,
   },
   shareButton: {
-    backgroundColor: "#25D366", // Verde WhatsApp
+    backgroundColor: colors.shareGreen,
     padding: 18,
     borderRadius: 14,
     marginBottom: 12,
@@ -315,18 +403,18 @@ const styles = StyleSheet.create({
   shareButtonText: {
     textAlign: "center",
     fontWeight: "bold",
-    color: "#fff",
+    color: colors.text,
     fontSize: 16,
   },
   restartButton: {
-    backgroundColor: "#FFD700",
+    backgroundColor: colors.gold,
     padding: 18,
     borderRadius: 14,
   },
   restartButtonText: {
     textAlign: "center",
     fontWeight: "bold",
-    color: "#0b1f3a",
+    color: colors.background,
     fontSize: 16,
   },
 });

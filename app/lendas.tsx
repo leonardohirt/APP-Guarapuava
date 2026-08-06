@@ -1,6 +1,10 @@
+import * as Haptics from "expo-haptics";
 import { Stack } from "expo-router";
-import { MotiView } from 'moti';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import * as Speech from "expo-speech";
+import { MotiView } from "moti";
+import React, { useEffect, useState } from "react";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { colors } from "@/constants/colors";
 
 const listaLendas = [
   { 
@@ -21,13 +25,40 @@ const listaLendas = [
     id: 3, 
     titulo: "A Serpente da Lagoa", 
     autor: "Tradição Oral",
-    historia: "Durante o século XX, uma história curiosa começou a circular entre mães e professores para evitar que as crianças faltassem às aulas: a existência de uma serpente gigante que dormia entre a Catedral e a Lagoa das Lágrimas.\n\nA versão mais famosa dizia que o despertar da fera ocorreria com a inauguração da estação ferroviária; o apito do primeiro trem a enfureceria, fazendo-a destruir a cidade. Quando o trem chegou e nada aconteceu, a lenda se adaptou: diziam agora que, se a antiga Catedral fosse demolida para a construção de uma nova, o animal acordaria.\n\nCuriosamente, essa crença popular foi tão forte que ajudou a interromper planos de demolição da igreja na época. Assim, entre o medo e o respeito à tradição, a Catedral permaneceu de pé e Guarapuava seguiu salva da fúria da serpente, que — segundo contam os antigos — continua em seu sono profundo sob nossas águas.",
+    historia: "Durante o século XX, uma história curiosa começou a circular entre mães e professores para evitar que as crianças faltassem às aulas: a existência de uma serpente gigante que dormia entre a Catedral e a Lagoa das Lágrimas.\n\nA versão mais famosa dizia que o despertar da fera ocorrería com a inauguração da estação ferroviária; o apito do primeiro trem a enfureceria, fazendo-a destruir a cidade. Quando o trem chegou e nada aconteceu, a lenda se adaptou: diziam agora que, se a antiga Catedral fosse demolida para a construção de uma nova, o animal acordaria.\n\nCuriosamente, essa crença popular foi tão forte que ajudou a interromper planos de demolição da igreja na época. Assim, entre o medo e o respeito à tradição, a Catedral permaneceu de pé e Guarapuava seguiu salva da fúria da serpente, que — segundo contam os antigos — continua em seu sono profundo sob nossas águas.",
     cor: "#064e3b"
   }
 ];
 
 export default function Lendas() {
+  const [speakingId, setSpeakingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      Speech.stop();
+    };
+  }, []);
+
+  const toggleSpeech = (item: any) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (speakingId === item.id) {
+      Speech.stop();
+      setSpeakingId(null);
+    } else {
+      Speech.stop();
+      setSpeakingId(item.id);
+      Speech.speak(`${item.titulo}. Por ${item.autor}. ${item.historia}`, {
+        language: "pt-BR",
+        rate: 0.95,
+        onDone: () => setSpeakingId(null),
+        onStopped: () => setSpeakingId(null),
+        onError: () => setSpeakingId(null),
+      });
+    }
+  };
+
   const mostrarDetalhes = (item: any) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Alert.alert(
       item.titulo, 
       `${item.historia}\n\n— Relatado por: ${item.autor}`, 
@@ -39,8 +70,8 @@ export default function Lendas() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Stack.Screen options={{ 
         title: "Lendas e Contos", 
-        headerStyle: { backgroundColor: "#020617" }, 
-        headerTintColor: "#fff" 
+        headerStyle: { backgroundColor: colors.background }, 
+        headerTintColor: colors.text 
       }} />
       
       <View style={styles.header}>
@@ -61,17 +92,30 @@ export default function Lendas() {
               onPress={() => mostrarDetalhes(item)}
             >
               <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>{item.titulo.toUpperCase()}</Text>
+                <View style={styles.cardHeaderRow}>
+                  <Text style={styles.cardTitle}>{item.titulo.toUpperCase()}</Text>
+                  
+                  {/* BOTÃO NARRAR / LER EM VOZ ALTA */}
+                  <TouchableOpacity 
+                    style={styles.speechButton}
+                    onPress={() => toggleSpeech(item)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.speechButtonText}>
+                      {speakingId === item.id ? "⏹️ PARAR" : "🔊 OUVIR"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 
                 <Text style={styles.cardAuthor}>Por {item.autor}</Text>
                 
-                <Text style={styles.cardPreview} numberOfLines={2}>
+                <Text style={styles.cardPreview} numberOfLines={3}>
                   {item.historia}
                 </Text>
                 
                 <View style={styles.divider} />
                 
-                <Text style={styles.cardReadMore}>Ler relato completo</Text>
+                <Text style={styles.cardReadMore}>Ler relato completo →</Text>
               </View>
             </Pressable>
           </MotiView>
@@ -85,17 +129,17 @@ export default function Lendas() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#020617" },
-  header: { padding: 40, alignItems: 'flex-start' },
-  headerTitle: { fontSize: 32, fontWeight: '300', color: '#f8fafc', letterSpacing: 1 },
-  headerSubtitle: { color: '#94a3b8', marginTop: 8, fontSize: 14, lineHeight: 20 },
+  container: { flex: 1, backgroundColor: colors.background },
+  header: { padding: 30, alignItems: 'flex-start' },
+  headerTitle: { fontSize: 32, fontWeight: 'bold', color: colors.gold, letterSpacing: 1 },
+  headerSubtitle: { color: colors.textMuted, marginTop: 8, fontSize: 14, lineHeight: 20 },
   list: { paddingHorizontal: 20 },
   card: { 
     padding: 24, 
-    borderRadius: 8, 
+    borderRadius: 14, 
     marginBottom: 20, 
-    borderLeftWidth: 2,
-    borderLeftColor: '#475569',
+    borderLeftWidth: 4,
+    borderLeftColor: colors.gold,
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -103,10 +147,25 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   cardContent: { flex: 1 },
-  cardTitle: { color: '#f1f5f9', fontSize: 18, fontWeight: 'bold', letterSpacing: 2, marginBottom: 4 },
-  cardAuthor: { color: '#64748b', fontSize: 11, fontWeight: '700', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 },
+  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  cardTitle: { color: '#f1f5f9', fontSize: 18, fontWeight: 'bold', letterSpacing: 1, flex: 1 },
+  speechButton: {
+    backgroundColor: 'rgba(255, 215, 0, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.gold,
+    marginLeft: 8,
+  },
+  speechButtonText: {
+    color: colors.gold,
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  cardAuthor: { color: colors.gold, fontSize: 11, fontWeight: '700', marginTop: 4, marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 },
   cardPreview: { color: '#94a3b8', fontSize: 14, lineHeight: 22, fontStyle: 'italic' },
   divider: { height: 1, backgroundColor: 'rgba(148, 163, 184, 0.1)', marginVertical: 15 },
-  cardReadMore: { color: '#cbd5e1', fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 },
-  footerText: { textAlign: 'center', color: '#475569', fontSize: 11, marginTop: 30, letterSpacing: 1 }
+  cardReadMore: { color: colors.gold, fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 },
+  footerText: { textAlign: 'center', color: colors.textSubtle, fontSize: 11, marginTop: 30, letterSpacing: 1 }
 });

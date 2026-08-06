@@ -29,7 +29,7 @@ export default function Config() {
           source={require("../assets/images/icon.png")} 
           style={styles.logo}
         />
-        <Text style={styles.appName}>Hino de Guarapuava</Text>
+        <Text style={styles.appName}>Guará-App</Text>
         <Text style={styles.versionText}>Versão {version}</Text>
       </MotiView>
 
@@ -52,7 +52,7 @@ export default function Config() {
         <Text style={styles.sectionTitle}>CRÉDITOS & FONTES</Text>
         <View style={styles.card}>
           <Text style={styles.infoText}>• Letra: Gilda Todeschini</Text>
-          <Text style={styles.infoText}>• Melodia: Bento Mossurunga</Text>
+          <Text style={styles.infoText}>• Melodia: Luiz Eulógio Zilli</Text>
           <Text style={styles.infoText}>• Imagens: Acervo Histórico Municipal</Text>
         </View>
       </View>

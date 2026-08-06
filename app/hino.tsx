@@ -1,7 +1,9 @@
+import * as Haptics from "expo-haptics";
 import { Audio } from "expo-av";
 import { Stack } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { colors } from "@/constants/colors";
 
 const lyrics = [
   { text: "O Sol surgiu, um dia, mais brilhante", start: 4000, end: 7000 },
@@ -38,6 +40,7 @@ export default function Hino() {
   const [currentLine, setCurrentLine] = useState<number | null>(null);
 
   async function toggleAudio() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     if (!sound.current) {
       const { sound: newSound } = await Audio.Sound.createAsync(
         require("../assets/audio/hino.mp3"),
@@ -50,8 +53,8 @@ export default function Hino() {
         if (!status.isLoaded) return;
         setPosition(status.positionMillis);
         if (status.didJustFinish) {
-            setIsPlaying(false);
-            setCurrentLine(null);
+          setIsPlaying(false);
+          setCurrentLine(null);
         }
       });
     } else {
@@ -72,9 +75,8 @@ export default function Hino() {
 
     if (lineIndex !== -1 && lineIndex !== currentLine) {
       setCurrentLine(lineIndex);
-      // Ajuste suave do scroll para manter a letra centralizada
       scrollRef.current?.scrollTo({
-        y: lineIndex * 45, 
+        y: lineIndex * 50, 
         animated: true,
       });
     }
@@ -93,8 +95,8 @@ export default function Hino() {
       <Stack.Screen
         options={{
           title: "Hino de Guarapuava",
-          headerStyle: { backgroundColor: "#0b1f3a" },
-          headerTintColor: "#fff",
+          headerStyle: { backgroundColor: colors.background },
+          headerTintColor: colors.text,
         }}
       />
 
@@ -103,8 +105,9 @@ export default function Hino() {
         <TouchableOpacity 
           style={[styles.playButton, isPlaying && styles.pauseButton]} 
           onPress={toggleAudio}
+          activeOpacity={0.8}
         >
-          <Text style={styles.playButtonText}>
+          <Text style={[styles.playButtonText, isPlaying && styles.pauseButtonText]}>
             {isPlaying ? "⏸ PAUSAR HINO" : "▶ TOCAR HINO"}
           </Text>
         </TouchableOpacity>
@@ -136,25 +139,27 @@ export default function Hino() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0b1f3a",
+    backgroundColor: colors.background,
   },
   headerCard: {
     padding: 24,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: colors.card,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     alignItems: "center",
     marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.cardBorder,
   },
   subtitle: {
-    color: "#aaa",
+    color: colors.textMuted,
     fontSize: 14,
     textTransform: "uppercase",
     letterSpacing: 1.2,
     marginBottom: 15,
   },
   playButton: {
-    backgroundColor: "#FFD700",
+    backgroundColor: colors.gold,
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 14,
@@ -166,14 +171,17 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   pauseButton: {
-    backgroundColor: "#fff",
+    backgroundColor: colors.text,
   },
   playButtonText: {
-    color: "#0b1f3a",
+    color: colors.background,
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 16,
     letterSpacing: 0.5,
+  },
+  pauseButtonText: {
+    color: colors.background,
   },
   lyricsWrapper: {
     flex: 1,
@@ -184,15 +192,15 @@ const styles = StyleSheet.create({
   },
   lyric: {
     fontSize: 18,
-    color: "rgba(255, 255, 255, 0.4)",
+    color: colors.textSubtle,
     textAlign: "center",
     marginVertical: 12,
-    lineHeight: 24,
+    lineHeight: 26,
   },
   activeLyric: {
-    color: "#FFD700",
+    color: colors.gold,
     fontSize: 22,
     fontWeight: "bold",
-    transform: [{ scale: 1.1 }],
+    transform: [{ scale: 1.05 }],
   },
 });

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Hino Guarapuava",
-    "slug": "hino-guarapauva",
+    "name": "Guará-App",
+    "slug": "guara-app",
     "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "hinoguarapauva",
+    "scheme": "guaraapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -29,7 +29,6 @@
       "expo-router",
       [
         "expo-splash-screen",
-        
         {
           "image": "./assets/images/splash.png",
           "imageWidth": 250,
@@ -45,8 +44,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "db711610-b44b-45e7-a046-3c738664b6e8"
+        "projectId": "c52dc07b-b4f0-4767-bfb3-160373072c15"
       }
-    }
+    },
+    "owner": "hirt12"
   }
 }

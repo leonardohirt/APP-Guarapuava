@@ -12,7 +12,7 @@ const listaCuriosidades = [
   { 
     id: 2, 
     pergunta: "Quem escreveu o hino?", 
-    resposta: "A letra é de Gilda Todeschini e a música de Bento Mossurunga. Uma obra prima da nossa cultura.", 
+    resposta: "A letra é de Gilda Todeschini e a música de Luiz Eulógio Zilli. Uma obra-prima da nossa cultura.", 
     cor: "#004d40" 
   },
   { 
