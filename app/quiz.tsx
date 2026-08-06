@@ -166,7 +166,7 @@ export default function Quiz() {
     } else {
       setFinished(true);
       // Atualizar melhor pontuação
-      const finalScore = score + (selected === questions[currentQuestion].correctAnswer ? 1 : 0);
+      const finalScore = score;
       if (bestScore === null || finalScore > bestScore) {
         setBestScore(finalScore);
         await AsyncStorage.setItem(STORAGE_KEY, finalScore.toString());
