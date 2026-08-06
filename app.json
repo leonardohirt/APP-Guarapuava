@@ -16,7 +16,7 @@
       "package": "com.guarapuava.hino",
       "adaptiveIcon": {
         "backgroundColor": "#0b1f3a",
-        "foregroundImage": "./assets/images/splash.png"
+        "foregroundImage": "./assets/images/icon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
