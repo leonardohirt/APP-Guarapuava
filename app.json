@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "guaraapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.guarapuava.hino"
@@ -35,7 +35,9 @@
           "resizeMode": "contain",
           "backgroundColor": "#0b1f3a"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
