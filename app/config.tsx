@@ -15,21 +15,21 @@ export default function Config() {
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
       <Stack.Screen 
         options={{ 
-          title: "Sobre & Configurações",
-          headerStyle: { backgroundColor: colors.background },
+          title: "Sobre o Aplicativo", 
+          headerStyle: { backgroundColor: colors.background }, 
           headerTintColor: colors.text 
         }} 
       />
 
-      {/* HERO / LOGO DO APP */}
+      {/* HERO / APP IDENTITY */}
       <MotiView 
         from={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: "spring", duration: 800 }}
-        style={styles.hero}
+        transition={{ type: "spring", duration: 700 }}
+        style={styles.heroCard}
       >
         <View style={styles.logoContainer}>
           <Image 
@@ -39,10 +39,10 @@ export default function Config() {
         </View>
         <Text style={styles.appName}>Guará-App</Text>
         <View style={styles.versionBadge}>
-          <Text style={styles.versionBadgeText}>VERSÃO {version}</Text>
+          <Text style={styles.versionBadgeText}>VERSÃO {version} • PRODUÇÃO</Text>
         </View>
         <Text style={styles.appSubtitle}>
-          Aplicativo de valorização do hino, história, lendas e patrimônio cultural de Guarapuava - PR.
+          Plataforma de preservação e difusão do hino, história oficial, lendas e patrimônio de Guarapuava - PR.
         </Text>
       </MotiView>
 
@@ -50,17 +50,17 @@ export default function Config() {
       <MotiView 
         from={{ opacity: 0, translateY: 15 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: 200, duration: 600 }}
+        transition={{ delay: 150, duration: 500 }}
         style={styles.section}
       >
-        <Text style={styles.sectionTitle}>👨‍💻 DESENVOLVIMENTO</Text>
+        <Text style={styles.sectionTitle}>DESENVOLVIMENTO</Text>
         <View style={styles.card}>
           <View style={styles.devRow}>
             <View style={styles.avatarBadge}>
-              <Text style={{ fontSize: 24 }}>🌲</Text>
+              <Text style={{ fontSize: 22 }}>🌲</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.label}>Criado e desenvolvido por:</Text>
+              <Text style={styles.devLabel}>Criado e desenvolvido por:</Text>
               <Text style={styles.devName}>{devName}</Text>
             </View>
           </View>
@@ -68,18 +68,18 @@ export default function Config() {
           <View style={styles.linksContainer}>
             <TouchableOpacity 
               style={styles.primaryButton} 
-              activeOpacity={0.8}
+              activeOpacity={0.85}
               onPress={() => abrirLink('https://github.com/leonardohirt')}
             >
-              <Text style={styles.primaryButtonText}>🌐 GitHub do Autor</Text>
+              <Text style={styles.primaryButtonText}>🌐 Perfil no GitHub</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.secondaryButton} 
-              activeOpacity={0.8}
+              activeOpacity={0.85}
               onPress={() => abrirLink('https://github.com/leonardohirt/APP-Guarapuava')}
             >
-              <Text style={styles.secondaryButtonText}>📦 Código-Fonte</Text>
+              <Text style={styles.secondaryButtonText}>📦 Repositório do Projeto</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -89,10 +89,10 @@ export default function Config() {
       <MotiView 
         from={{ opacity: 0, translateY: 15 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: 350, duration: 600 }}
+        transition={{ delay: 250, duration: 500 }}
         style={styles.section}
       >
-        <Text style={styles.sectionTitle}>📜 CRÉDITOS & FONTES HISTÓRICAS</Text>
+        <Text style={styles.sectionTitle}>CRÉDITOS HISTÓRICOS & AUTORIA</Text>
         <View style={styles.card}>
           <View style={styles.creditItem}>
             <Text style={styles.creditIcon}>✍️</Text>
@@ -102,225 +102,251 @@ export default function Config() {
             </View>
           </View>
 
-          <View style={styles.divider} />
+          <View style={styles.creditDivider} />
 
           <View style={styles.creditItem}>
-            <Text style={styles.creditIcon}>🎵</Text>
+            <Text style={styles.creditIcon}>🎼</Text>
             <View style={{ flex: 1 }}>
-              <Text style={styles.creditLabel}>Melodia e Partitura Original</Text>
+              <Text style={styles.creditLabel}>Música do Hino Municipal</Text>
               <Text style={styles.creditValue}>Luiz Eulógio Zilli</Text>
             </View>
           </View>
 
-          <View style={styles.divider} />
+          <View style={styles.creditDivider} />
 
           <View style={styles.creditItem}>
             <Text style={styles.creditIcon}>🏛️</Text>
             <View style={{ flex: 1 }}>
-              <Text style={styles.creditLabel}>Acervo & Pesquisa Histórica</Text>
-              <Text style={styles.creditValue}>Museu Visconde de Guarapuava & Nivaldo Krüger</Text>
+              <Text style={styles.creditLabel}>Acervo e Partitura Histórica</Text>
+              <Text style={styles.creditValue}>Museu Municipal Visconde de Guarapuava</Text>
             </View>
           </View>
         </View>
       </MotiView>
 
-      {/* RECURSOS TÉCNICOS */}
+      {/* SEÇÃO CARACTERÍSTICAS TÉCNICAS */}
       <MotiView 
         from={{ opacity: 0, translateY: 15 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ delay: 500, duration: 600 }}
+        transition={{ delay: 350, duration: 500 }}
         style={styles.section}
       >
-        <Text style={styles.sectionTitle}>⚡ RECURSOS DO APLICATIVO</Text>
+        <Text style={styles.sectionTitle}>ESPECIFICAÇÕES DO SISTEMA</Text>
         <View style={styles.card}>
-          <Text style={styles.techText}>• Narração interativa em voz alta (`expo-speech`)</Text>
-          <Text style={styles.techText}>• Resposta tátil ao toque (`expo-haptics`)</Text>
-          <Text style={styles.techText}>• Salvamento local da melhor pontuação no Quiz</Text>
-          <Text style={styles.techText}>• Comparativo interativo de fotos (Ontem & Hoje)</Text>
+          <View style={styles.featureRow}>
+            <Text style={styles.featureBullet}>⚡</Text>
+            <Text style={styles.featureText}>100% Autônomo e Funcional Offline</Text>
+          </View>
+          <View style={styles.featureRow}>
+            <Text style={styles.featureBullet}>🔊</Text>
+            <Text style={styles.featureText}>Síntese de Voz Nativa em Português (Expo Speech)</Text>
+          </View>
+          <View style={styles.featureRow}>
+            <Text style={styles.featureBullet}>📳</Text>
+            <Text style={styles.featureText}>Respostas Táteis com Haptic Feedback</Text>
+          </View>
+          <View style={styles.featureRow}>
+            <Text style={styles.featureBullet}>💾</Text>
+            <Text style={styles.featureText}>Salvamento de Recorde Local (AsyncStorage)</Text>
+          </View>
         </View>
       </MotiView>
 
-      <Text style={styles.copy}>
-        © 2026 Guará-App • Guarapuava - PR{"\n"}
-        Todos os direitos reservados.
-      </Text>
-
-      <View style={{ height: 40 }} />
+      <Text style={styles.footer}>Guará-App • Guarapuava - Paraná • 2026</Text>
+      <View style={{ height: 30 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: colors.background, 
-    paddingHorizontal: 20 
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  hero: { 
-    alignItems: 'center', 
-    marginVertical: 25 
+  scrollContent: {
+    padding: 18,
+  },
+  heroCard: {
+    backgroundColor: colors.cardGlass,
+    borderRadius: 24,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    marginBottom: 22,
   },
   logoContainer: {
-    borderRadius: 22,
-    padding: 3,
-    backgroundColor: "rgba(255, 215, 0, 0.2)",
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderWidth: 1,
-    borderColor: colors.gold,
+    borderColor: colors.cardBorder,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 14,
     shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,
-    shadowRadius: 10,
+    shadowRadius: 8,
   },
-  logo: { 
-    width: 86, 
-    height: 86, 
-    borderRadius: 18 
+  logo: {
+    width: 68,
+    height: 68,
+    borderRadius: 16,
   },
-  appName: { 
-    color: colors.gold, 
-    fontSize: 28, 
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
+  appName: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: colors.text,
+    letterSpacing: -0.5,
   },
   versionBadge: {
     backgroundColor: colors.goldLight,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.gold,
-    marginTop: 8,
+    borderColor: colors.cardBorder,
+    marginTop: 6,
     marginBottom: 12,
   },
-  versionBadgeText: { 
-    color: colors.gold, 
-    fontSize: 11, 
-    fontWeight: 'bold',
+  versionBadgeText: {
+    color: colors.goldBright,
+    fontSize: 10,
+    fontWeight: '900',
     letterSpacing: 1,
   },
-  appSubtitle: { 
-    color: colors.textMuted, 
-    textAlign: 'center', 
-    fontSize: 14,
-    lineHeight: 22,
-    paddingHorizontal: 15,
+  appSubtitle: {
+    fontSize: 13,
+    color: colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 19,
   },
-  section: { 
-    marginBottom: 20 
+  section: {
+    marginBottom: 18,
   },
-  sectionTitle: { 
-    color: colors.gold, 
-    fontSize: 12, 
-    fontWeight: 'bold', 
-    marginBottom: 10, 
-    letterSpacing: 1.2 
+  sectionTitle: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: colors.gold,
+    letterSpacing: 1.5,
+    marginBottom: 10,
+    paddingHorizontal: 4,
   },
-  card: { 
-    backgroundColor: 'rgba(255, 255, 255, 0.07)', 
-    borderRadius: 18, 
+  card: {
+    backgroundColor: colors.cardGlass,
+    borderRadius: 18,
     padding: 18,
     borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.22)',
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
+    borderColor: colors.cardBorderSubtle,
   },
   devRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
+    gap: 12,
   },
   avatarBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     backgroundColor: colors.goldLight,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 14,
-    borderWidth: 1,
-    borderColor: colors.gold,
   },
-  label: { 
-    color: colors.textSubtle, 
-    fontSize: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+  devLabel: {
+    fontSize: 11,
+    color: colors.textSubtle,
+    fontWeight: '600',
   },
-  devName: { 
-    color: colors.text, 
-    fontSize: 18, 
-    fontWeight: 'bold',
+  devName: {
+    fontSize: 16,
+    fontWeight: '900',
+    color: colors.text,
     marginTop: 2,
   },
   linksContainer: {
     gap: 10,
   },
-  primaryButton: { 
-    backgroundColor: colors.gold, 
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12, 
+  primaryButton: {
+    backgroundColor: colors.gold,
+    paddingVertical: 13,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
-  primaryButtonText: { 
-    color: colors.background, 
-    fontWeight: 'bold', 
-    fontSize: 14,
+  primaryButtonText: {
+    color: colors.textDark,
+    fontWeight: '900',
+    fontSize: 13,
+    letterSpacing: 0.5,
   },
-  secondaryButton: { 
-    backgroundColor: 'rgba(255, 215, 0, 0.12)', 
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12, 
+  secondaryButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    paddingVertical: 13,
+    borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: colors.gold,
+    borderColor: colors.cardBorderSubtle,
   },
-  secondaryButtonText: { 
-    color: colors.gold, 
-    fontWeight: 'bold', 
-    fontSize: 14,
+  secondaryButtonText: {
+    color: colors.text,
+    fontWeight: '700',
+    fontSize: 13,
   },
   creditItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
     paddingVertical: 4,
   },
   creditIcon: {
-    fontSize: 22,
-    marginRight: 14,
+    fontSize: 20,
   },
   creditLabel: {
-    color: colors.textSubtle,
     fontSize: 11,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    color: colors.textSubtle,
   },
   creditValue: {
-    color: colors.text,
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.goldChampagne,
     marginTop: 2,
   },
-  divider: {
+  creditDivider: {
     height: 1,
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    marginVertical: 12,
+    backgroundColor: colors.cardBorderSubtle,
+    marginVertical: 10,
   },
-  techText: { 
-    color: colors.textMuted, 
-    fontSize: 13, 
-    lineHeight: 22,
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 6,
   },
-  copy: { 
-    textAlign: 'center', 
-    color: colors.textSubtle, 
-    fontSize: 12, 
-    marginTop: 20, 
-    marginBottom: 10,
-    lineHeight: 18,
-  }
+  featureBullet: {
+    fontSize: 16,
+  },
+  featureText: {
+    fontSize: 13,
+    color: colors.textMuted,
+    fontWeight: '600',
+  },
+  footer: {
+    textAlign: 'center',
+    color: colors.textSubtle,
+    fontSize: 11,
+    marginTop: 10,
+    fontStyle: 'italic',
+  },
 });

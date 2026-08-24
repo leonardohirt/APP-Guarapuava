@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { Stack } from "expo-router";
+import { MotiView } from "moti";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Alert,
@@ -40,10 +41,10 @@ const allQuestions: QuestionItem[] = [
     explanation: "A poetisa Gilda Boscardim Todeschini compôs a letra oficial exaltando a beleza e os valores de Guarapuava.",
   },
   {
-    question: "Quem compôs a música do hino?",
+    question: "Quem compôs a música erudita do hino?",
     options: ["Luiz Eulógio Zilli", "Villa-Lobos", "Carlos Gomes", "Dom Pedro I"],
     correctAnswer: "Luiz Eulógio Zilli",
-    explanation: "O maestro Luiz Eulógio Zilli compôs a bela melodia erudita do hino municipal.",
+    explanation: "O maestro Luiz Eulógio Zilli compôs a bela e triunfante melodia do hino municipal.",
   },
   {
     question: "Onde está exposta a partitura original do hino?",
@@ -53,8 +54,8 @@ const allQuestions: QuestionItem[] = [
   },
   {
     question: "O hino exalta principalmente:",
-    options: ["Tecnologia moderna", "Natureza e cultura local", "Indústria pesada", "Comércio exterior"],
-    correctAnswer: "Natureza e cultura local",
+    options: ["Tecnologia moderna", "Natureza, tradição e cultura local", "Indústria pesada", "Comércio exterior"],
+    correctAnswer: "Natureza, tradição e cultura local",
     explanation: "Os versos destacam os pinheirais, os campos verdejantes e o calor da cultura do povo guarapuavano.",
   },
   {
@@ -64,16 +65,16 @@ const allQuestions: QuestionItem[] = [
     explanation: "O verso de abertura canta: 'O Sol surgiu, um dia, mais brilhante' trazendo luz e esperança.",
   },
   {
-    question: "Guarapuava é poeticamente descrita como:",
+    question: "Guarapuava é poeticamente descrita no hino como:",
     options: ["Uma fortaleza antiga", "Uma menina radiante", "Uma metrópole industrial", "Uma estrela distante"],
     correctAnswer: "Uma menina radiante",
     explanation: "No hino, a cidade é carinhosamente chamada de 'menina radiante, com o ouro dos trigais a se enfeitar'.",
   },
   {
-    question: "O hino celebra o quê?",
-    options: ["Conquistas esportivas", "História e identidade da cidade", "Guerras antigas", "Riquezas minerais"],
-    correctAnswer: "História e identidade da cidade",
-    explanation: "É um marco cívico de amor à terra, preservando a memória dos tropeiros e fundadores.",
+    question: "Qual expedição iniciou o povoamento colonial em 1810?",
+    options: ["Bandeirantes Paulistas", "Real Expedição de Conquista", "Marcha para o Oeste", "Expedição Farroupilha"],
+    correctAnswer: "Real Expedição de Conquista",
+    explanation: "A Real Expedição de Conquista de Diogo Pinto de Azevedo Portugal construiu o Fortim Atalaia em 1810.",
   },
   {
     question: "O hino foi adotado oficialmente como:",
@@ -82,18 +83,20 @@ const allQuestions: QuestionItem[] = [
     explanation: "É o símbolo sonoro oficial do município de Guarapuava executado em solenidades cívicas.",
   },
   {
-    question: "A partitura original foi preservada no município em um ato de:",
-    options: ["Venda pública", "Resgate cultural", "Competição musical", "Doação anônima"],
-    correctAnswer: "Resgate cultural",
-    explanation: "A preservação da partitura foi um importante resgate da memória musical da cidade.",
+    question: "O que significa 'Guarapuava' em tupi-guarani?",
+    options: ["Águas Claras", "Lobo Bravo", "Terra do Frio", "Campo Aberto"],
+    correctAnswer: "Lobo Bravo",
+    explanation: "'Guará' significa lobo-guará e 'Puava' significa bravo ou barulho que ecoa.",
   },
   {
-    question: "O hino representa principalmente:",
-    options: ["Orgulho e identidade local", "Riqueza financeira", "Poder militar", "Expansão territorial"],
-    correctAnswer: "Orgulho e identidade local",
-    explanation: "Representa a união e o sentimento de orgulho de pertencer à Terra do Lobo Bravo.",
+    question: "Qual é a maior queda d'água do Sul do Brasil na região?",
+    options: ["Cataratas do Iguaçu", "Salto São Francisco", "Salto São João", "Salto do Rio Branco"],
+    correctAnswer: "Salto São Francisco",
+    explanation: "O Salto São Francisco possui impressionantes 196 metros de queda livre contínua.",
   },
 ];
+
+const optionLetters = ["A", "B", "C", "D"];
 
 export default function Quiz() {
   const [questions, setQuestions] = useState<QuestionItem[]>(() =>
@@ -124,7 +127,7 @@ export default function Quiz() {
   useEffect(() => {
     Animated.timing(progressAnim, {
       toValue: (currentQuestion + 1) / questions.length,
-      duration: 500,
+      duration: 400,
       useNativeDriver: false,
     }).start();
   }, [currentQuestion]);
@@ -132,7 +135,7 @@ export default function Quiz() {
   const handleShare = async () => {
     try {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      const mensagem = `Fiz o Quiz no Guará-App e acertei ${score} de ${questions.length} perguntas sobre Guarapuava! 🌲✨\n\nConsegue fazer melhor?`;
+      const mensagem = `Fiz o Quiz no Guará-App e acertei ${score} de ${questions.length} perguntas sobre Guarapuava! 🌲✨\n\nConsegue fazer melhor? Baixe o Guará-App!`;
       await Share.share({ message: mensagem });
     } catch (error) {
       Alert.alert("Erro", "Não foi possível compartilhar.");
@@ -153,142 +156,231 @@ export default function Quiz() {
 
     setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 150);
+    }, 250);
   }
 
-  async function nextQuestion() {
+  function nextQuestion() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
-
-    if (currentQuestion + 1 < questions.length) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion((prev) => prev + 1);
       setSelected(null);
+      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
     } else {
       setFinished(true);
-      // Atualizar melhor pontuação
+      
       const finalScore = score;
       if (bestScore === null || finalScore > bestScore) {
         setBestScore(finalScore);
-        await AsyncStorage.setItem(STORAGE_KEY, finalScore.toString());
+        AsyncStorage.setItem(STORAGE_KEY, finalScore.toString());
       }
     }
   }
 
   function restartQuiz() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    progressAnim.setValue(0);
     setQuestions(shuffleArray(allQuestions).slice(0, 5));
     setCurrentQuestion(0);
     setSelected(null);
     setScore(0);
     setFinished(false);
-    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
   }
 
-  const currentData = questions[currentQuestion];
+  const q = questions[currentQuestion];
+  const isCorrect = selected === q?.correctAnswer;
 
   return (
     <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          title: "Quiz Guarapuava",
-          headerStyle: { backgroundColor: colors.background },
-          headerTintColor: colors.text,
-        }}
+      <Stack.Screen 
+        options={{ 
+          title: "Quiz Cultural", 
+          headerStyle: { backgroundColor: colors.background }, 
+          headerTintColor: colors.text 
+        }} 
       />
 
-      {finished ? (
-        <View style={styles.centerContent}>
-          <Text style={styles.title}>Resultado Final</Text>
-          <Text style={styles.scoreText}>
-            Você acertou {score} de {questions.length}
-          </Text>
+      {!finished ? (
+        <ScrollView 
+          ref={scrollViewRef}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* HUD SUPERIOR */}
+          <View style={styles.hudCard}>
+            <View style={styles.hudTopRow}>
+              <View style={styles.questionCounterPill}>
+                <Text style={styles.questionCounterText}>
+                  PERGUNTA {currentQuestion + 1} DE {questions.length}
+                </Text>
+              </View>
 
-          {bestScore !== null && (
-            <View style={styles.bestScoreBadge}>
-              <Text style={styles.bestScoreText}>🏆 Sua Melhor Pontuação: {bestScore} / {questions.length}</Text>
+              <View style={styles.scorePill}>
+                <Text style={styles.scorePillText}>🏆 ACERTOS: {score}</Text>
+              </View>
             </View>
-          )}
 
-          <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-            <Text style={styles.shareButtonText}>Compartilhar Resultado 🚀</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.restartButton} onPress={restartQuiz}>
-            <Text style={styles.restartButtonText}>Jogar Novamente 🔄</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <>
-          <View style={styles.progressBarContainer}>
-            <Animated.View
-              style={[
-                styles.progressBarFill,
-                {
-                  width: progressAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ["0%", "100%"],
-                  }),
-                },
-              ]}
-            />
+            {/* BARRA DE PROGRESSO */}
+            <View style={styles.progressBarBg}>
+              <Animated.View
+                style={[
+                  styles.progressBarFill,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["0%", "100%"],
+                    }),
+                  },
+                ]}
+              />
+            </View>
           </View>
 
-          <ScrollView 
-            ref={scrollViewRef}
-            contentContainerStyle={styles.quizContent} 
-            showsVerticalScrollIndicator={false}
+          {/* CARD DA PERGUNTA */}
+          <MotiView
+            key={currentQuestion}
+            from={{ opacity: 0, translateY: 15 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 400 }}
+            style={styles.questionCard}
           >
-            <Text style={styles.progressLabel}>
-              Pergunta {currentQuestion + 1} de {questions.length}
-            </Text>
+            <Text style={styles.questionText}>{q.question}</Text>
+          </MotiView>
 
-            <Text style={styles.questionText}>{currentData.question}</Text>
-
-            {currentOptions.map((option, index) => {
-              const isCorrect = option === currentData.correctAnswer;
-              const isSelected = option === selected;
-
-              let backgroundColor = colors.card;
-              let borderColor = colors.cardBorder;
-              if (selected !== null) {
-                if (isCorrect) {
-                  backgroundColor = colors.correct;
-                  borderColor = colors.gold;
-                } else if (isSelected) {
-                  backgroundColor = colors.incorrect;
-                }
-              }
+          {/* LISTA DE OPÇÕES */}
+          <View style={styles.optionsGroup}>
+            {currentOptions.map((option, idx) => {
+              const letter = optionLetters[idx];
+              const isSelected = selected === option;
+              const isCorrectAnswer = selected !== null && option === q.correctAnswer;
+              const isIncorrectSelected = selected !== null && isSelected && option !== q.correctAnswer;
 
               return (
                 <TouchableOpacity
-                  key={`${currentQuestion}-${index}`}
-                  style={[styles.optionButton, { backgroundColor, borderColor }]}
+                  key={idx}
+                  style={[
+                    styles.optionCard,
+                    isCorrectAnswer && styles.optionCardCorrect,
+                    isIncorrectSelected && styles.optionCardIncorrect,
+                  ]}
                   onPress={() => handleAnswer(option)}
-                  activeOpacity={selected ? 1 : 0.7}
+                  activeOpacity={0.8}
+                  disabled={selected !== null}
                 >
-                  <Text style={styles.optionText}>{option}</Text>
+                  <View
+                    style={[
+                      styles.letterBadge,
+                      isCorrectAnswer && styles.letterBadgeCorrect,
+                      isIncorrectSelected && styles.letterBadgeIncorrect,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.letterBadgeText,
+                        (isCorrectAnswer || isIncorrectSelected) && styles.letterBadgeTextActive,
+                      ]}
+                    >
+                      {letter}
+                    </Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      isCorrectAnswer && styles.optionTextCorrect,
+                      isIncorrectSelected && styles.optionTextIncorrect,
+                    ]}
+                  >
+                    {option}
+                  </Text>
                 </TouchableOpacity>
               );
             })}
+          </View>
 
-            {/* CARD EXPLICATIVO */}
-            {selected !== null && (
-              <View style={styles.explanationCard}>
-                <Text style={styles.explanationTitle}>💡 Você sabia?</Text>
-                <Text style={styles.explanationText}>{currentData.explanation}</Text>
+          {/* CARD EXPLICATIVO */}
+          {selected !== null && (
+            <MotiView
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ duration: 350 }}
+              style={styles.feedbackSection}
+            >
+              <View style={[styles.explanationCard, isCorrect ? styles.explanationCardCorrect : styles.explanationCardIncorrect]}>
+                <View style={styles.feedbackTitleRow}>
+                  <Text style={styles.feedbackIcon}>{isCorrect ? "✅ Resposta Correta!" : "❌ Resposta Incorreta"}</Text>
+                </View>
+                <Text style={styles.explanationText}>{q.explanation}</Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.nextButton}
+                onPress={nextQuestion}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.nextButtonText}>
+                  {currentQuestion < questions.length - 1 ? "PRÓXIMA PERGUNTA →" : "VER RESULTADO FINAL 🏆"}
+                </Text>
+              </TouchableOpacity>
+            </MotiView>
+          )}
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      ) : (
+        /* TELA DE RESULTADO FINAL */
+        <ScrollView contentContainerStyle={styles.resultScrollContent} showsVerticalScrollIndicator={false}>
+          <MotiView
+            from={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', duration: 700 }}
+            style={styles.resultCard}
+          >
+            <View style={styles.trophyCircle}>
+              <Text style={{ fontSize: 44 }}>🏆</Text>
+            </View>
+
+            <Text style={styles.resultTitle}>Quiz Concluído!</Text>
+            
+            <View style={styles.scoreBanner}>
+              <Text style={styles.scoreBigNumber}>{score}</Text>
+              <Text style={styles.scoreOfTotal}>de {questions.length} acertos</Text>
+            </View>
+
+            <View style={styles.evaluationPill}>
+              <Text style={styles.evaluationText}>
+                {score === 5
+                  ? "🌟 MESTRE DA HISTÓRIA GUARAPUAVANA!"
+                  : score >= 3
+                  ? "👏 MUITO BEM! VOCÊ CONHECE A NOSSA TERRA!"
+                  : "📚 VALEU! QUE TAL JOGAR NOVAMENTE E APRENDER MAIS?"}
+              </Text>
+            </View>
+
+            {bestScore !== null && (
+              <View style={styles.bestRecordRow}>
+                <Text style={styles.bestRecordText}>🏆 Seu Melhor Recorde Salvo: <Text style={{ color: colors.goldBright, fontWeight: 'bold' }}>{bestScore} / 5</Text></Text>
               </View>
             )}
 
-            {selected !== null && (
-              <TouchableOpacity style={styles.nextButton} onPress={nextQuestion}>
-                <Text style={styles.nextButtonText}>
-                  {currentQuestion + 1 === questions.length ? "Finalizar Quiz" : "Próxima Pergunta →"}
-                </Text>
+            {/* BOTÕES DE AÇÃO FINAL */}
+            <View style={styles.resultActionGroup}>
+              <TouchableOpacity 
+                style={styles.restartButton} 
+                onPress={restartQuiz} 
+                activeOpacity={0.85}
+              >
+                <Text style={styles.restartButtonText}>🔄 JOGAR NOVAMENTE</Text>
               </TouchableOpacity>
-            )}
-          </ScrollView>
-        </>
+
+              <TouchableOpacity 
+                style={styles.shareButton} 
+                onPress={handleShare} 
+                activeOpacity={0.85}
+              >
+                <Text style={styles.shareButtonText}>💬 COMPARTILHAR NO WHATSAPP</Text>
+              </TouchableOpacity>
+            </View>
+          </MotiView>
+          <View style={{ height: 40 }} />
+        </ScrollView>
       )}
     </View>
   );
@@ -299,140 +391,286 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  progressBarContainer: {
-    height: 8,
-    backgroundColor: colors.card,
-    width: "100%",
+  scrollContent: {
+    padding: 18,
   },
-  progressBarFill: {
-    height: "100%",
-    backgroundColor: colors.gold,
+  hudCard: {
+    backgroundColor: colors.cardGlass,
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: colors.cardBorderSubtle,
+    marginBottom: 16,
   },
-  quizContent: {
-    padding: 24,
-    paddingTop: 20,
-    paddingBottom: 40,
+  hudTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
-  centerContent: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 30,
+  questionCounterPill: {
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
-  progressLabel: {
-    color: colors.textMuted,
-    textAlign: "center",
-    marginBottom: 10,
-    fontSize: 14,
-    textTransform: "uppercase",
+  questionCounterText: {
+    color: colors.goldChampagne,
+    fontSize: 10,
+    fontWeight: '800',
     letterSpacing: 1,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: colors.text,
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  scoreText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: colors.gold,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  bestScoreBadge: {
+  scorePill: {
     backgroundColor: colors.goldLight,
-    padding: 12,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.gold,
-    marginBottom: 30,
-    alignItems: "center",
+    borderColor: colors.cardBorder,
   },
-  bestScoreText: {
-    color: colors.gold,
-    fontWeight: "bold",
-    fontSize: 15,
+  scorePillText: {
+    color: colors.goldBright,
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  progressBarBg: {
+    height: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: colors.gold,
+  },
+  questionCard: {
+    backgroundColor: colors.cardGlass,
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    marginBottom: 16,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
   },
   questionText: {
-    fontSize: 22,
+    fontSize: 17,
+    fontWeight: '800',
     color: colors.text,
-    marginBottom: 24,
-    textAlign: "center",
-    fontWeight: "600",
-    lineHeight: 30,
+    lineHeight: 25,
   },
-  optionButton: {
-    padding: 18,
+  optionsGroup: {
+    gap: 10,
+    marginBottom: 16,
+  },
+  optionCard: {
+    backgroundColor: colors.cardGlass,
     borderRadius: 14,
-    marginBottom: 12,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderColor: colors.cardBorderSubtle,
+  },
+  optionCardCorrect: {
+    backgroundColor: 'rgba(16, 185, 129, 0.18)',
+    borderColor: colors.emerald,
+  },
+  optionCardIncorrect: {
+    backgroundColor: 'rgba(239, 68, 68, 0.18)',
+    borderColor: colors.ruby,
+  },
+  letterBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  letterBadgeCorrect: {
+    backgroundColor: colors.emerald,
+  },
+  letterBadgeIncorrect: {
+    backgroundColor: colors.ruby,
+  },
+  letterBadgeText: {
+    color: colors.goldBright,
+    fontSize: 13,
+    fontWeight: '800',
+  },
+  letterBadgeTextActive: {
+    color: '#fff',
   },
   optionText: {
-    color: colors.text,
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  explanationCard: {
-    backgroundColor: "rgba(255, 215, 0, 0.12)",
-    borderRadius: 14,
-    padding: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: colors.gold,
-    borderWidth: 1,
-    borderColor: "rgba(255, 215, 0, 0.25)",
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  explanationTitle: {
-    color: colors.gold,
     fontSize: 14,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  explanationText: {
-    color: colors.text,
-    fontSize: 14,
+    color: colors.textMuted,
+    fontWeight: '600',
+    flex: 1,
     lineHeight: 20,
   },
+  optionTextCorrect: {
+    color: '#fff',
+    fontWeight: '800',
+  },
+  optionTextIncorrect: {
+    color: '#fff',
+    fontWeight: '800',
+  },
+  feedbackSection: {
+    marginTop: 4,
+    gap: 12,
+  },
+  explanationCard: {
+    padding: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  explanationCardCorrect: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    borderColor: 'rgba(16, 185, 129, 0.3)',
+  },
+  explanationCardIncorrect: {
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+  },
+  feedbackTitleRow: {
+    marginBottom: 6,
+  },
+  feedbackIcon: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: colors.text,
+  },
+  explanationText: {
+    fontSize: 13,
+    color: colors.textMuted,
+    lineHeight: 19,
+  },
   nextButton: {
-    marginTop: 15,
     backgroundColor: colors.gold,
-    padding: 18,
+    paddingVertical: 15,
     borderRadius: 14,
+    alignItems: 'center',
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   nextButtonText: {
-    textAlign: "center",
-    fontWeight: "bold",
-    color: colors.background,
-    fontSize: 16,
+    color: colors.textDark,
+    fontWeight: '900',
+    fontSize: 13,
+    letterSpacing: 1,
   },
-  shareButton: {
-    backgroundColor: colors.shareGreen,
-    padding: 18,
-    borderRadius: 14,
-    marginBottom: 12,
+
+  // RESULT SCREEN
+  resultScrollContent: {
+    padding: 20,
+    justifyContent: 'center',
+    flexGrow: 1,
   },
-  shareButtonText: {
-    textAlign: "center",
-    fontWeight: "bold",
+  resultCard: {
+    backgroundColor: colors.cardGlass,
+    borderRadius: 24,
+    padding: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+  },
+  trophyCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: colors.goldLight,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  resultTitle: {
+    fontSize: 24,
+    fontWeight: '900',
     color: colors.text,
-    fontSize: 16,
+    marginBottom: 14,
+  },
+  scoreBanner: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  scoreBigNumber: {
+    fontSize: 48,
+    fontWeight: '900',
+    color: colors.goldBright,
+    lineHeight: 52,
+  },
+  scoreOfTotal: {
+    fontSize: 13,
+    color: colors.textMuted,
+    fontWeight: '600',
+  },
+  evaluationPill: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.cardBorderSubtle,
+  },
+  evaluationText: {
+    color: colors.goldChampagne,
+    fontSize: 11,
+    fontWeight: '800',
+    textAlign: 'center',
+    letterSpacing: 0.5,
+  },
+  bestRecordRow: {
+    marginBottom: 24,
+  },
+  bestRecordText: {
+    fontSize: 12,
+    color: colors.textSubtle,
+  },
+  resultActionGroup: {
+    width: '100%',
+    gap: 10,
   },
   restartButton: {
     backgroundColor: colors.gold,
-    padding: 18,
+    paddingVertical: 15,
     borderRadius: 14,
+    alignItems: 'center',
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   restartButtonText: {
-    textAlign: "center",
-    fontWeight: "bold",
-    color: colors.background,
-    fontSize: 16,
+    color: colors.textDark,
+    fontWeight: '900',
+    fontSize: 13,
+    letterSpacing: 1,
+  },
+  shareButton: {
+    backgroundColor: colors.shareGreen,
+    paddingVertical: 15,
+    borderRadius: 14,
+    alignItems: 'center',
+  },
+  shareButtonText: {
+    color: '#fff',
+    fontWeight: '800',
+    fontSize: 13,
+    letterSpacing: 0.5,
   },
 });

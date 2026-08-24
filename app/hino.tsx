@@ -90,7 +90,7 @@ export default function Hino() {
     if (lineIndex !== -1 && lineIndex !== currentLine) {
       setCurrentLine(lineIndex);
       scrollRef.current?.scrollTo({
-        y: Math.max(0, lineIndex * 48 - 120), 
+        y: Math.max(0, lineIndex * 54 - 100), 
         animated: true,
       });
     }
@@ -116,47 +116,55 @@ export default function Hino() {
         }}
       />
 
-      {/* PAINEL DO REPRODUTOR DE ÁUDIO */}
-      <View style={styles.headerCard}>
-        <Text style={styles.subtitle}>HINO OFICIAL DO MUNICÍPIO</Text>
-        <Text style={styles.creditsText}>
-          Letra: Gilda B. Todeschini • Música: Luiz E. Zilli
+      {/* DOCK DO PLAYER DE MÚSICA */}
+      <View style={styles.playerDock}>
+        <View style={styles.badgeRow}>
+          <View style={styles.audioBadge}>
+            <Text style={styles.audioBadgeText}>🎼 SÍMBOLO OFICIAL</Text>
+          </View>
+        </View>
+
+        <Text style={styles.playerTitle}>Hino Municipal de Guarapuava</Text>
+        <Text style={styles.playerCredits}>
+          Letra: <Text style={styles.highlightCredit}>Gilda Todeschini</Text> • Música: <Text style={styles.highlightCredit}>Luiz E. Zilli</Text>
         </Text>
 
+        {/* CONTROLE DE REPRODUÇÃO */}
         <TouchableOpacity 
           style={[styles.playButton, isPlaying && styles.pauseButton]} 
           onPress={toggleAudio}
           activeOpacity={0.85}
         >
+          <Text style={[styles.playButtonIcon, isPlaying && styles.pauseButtonIcon]}>
+            {isPlaying ? "⏸" : "▶"}
+          </Text>
           <Text style={[styles.playButtonText, isPlaying && styles.pauseButtonText]}>
-            {isPlaying ? "⏸ PAUSAR HINO" : "▶ REPRODUZIR HINO"}
+            {isPlaying ? "PAUSAR HINO" : "REPRODUZIR HINO"}
           </Text>
         </TouchableOpacity>
 
-        {/* BARRA DE PROGRESSO DO ÁUDIO */}
-        {isPlaying && (
-          <MotiView 
-            from={{ opacity: 0, scaleY: 0 }}
-            animate={{ opacity: 1, scaleY: 1 }}
-            style={styles.progressContainer}
-          >
-            <View style={styles.trackBackground}>
-              <View style={[styles.trackFill, { width: `${progressPercent}%` }]} />
-            </View>
-            <View style={styles.timeRow}>
-              <Text style={styles.timeText}>{formatMillis(position)}</Text>
-              <Text style={styles.timeText}>{formatMillis(duration)}</Text>
-            </View>
-          </MotiView>
-        )}
+        {/* TIMELINE DE PROGRESSO */}
+        <View style={styles.progressSection}>
+          <View style={styles.trackBackground}>
+            <View style={[styles.trackFill, { width: `${progressPercent}%` }]} />
+          </View>
+          <View style={styles.timeRow}>
+            <Text style={styles.timeText}>{formatMillis(position)}</Text>
+            <Text style={styles.timeText}>{duration > 0 ? formatMillis(duration) : "01:33"}</Text>
+          </View>
+        </View>
       </View>
 
-      {/* LETRA COM DESTAQUE DA ESTROFE ATIVA */}
-      <View style={styles.lyricsWrapper}>
+      {/* LETRA TELEPROMPTER */}
+      <View style={styles.lyricsContainer}>
+        <View style={styles.lyricsHeaderPill}>
+          <Text style={styles.lyricsHeaderText}>ACOMPANHE A LETRA</Text>
+        </View>
+
         <ScrollView 
           ref={scrollRef} 
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={styles.lyricsScrollContent}
         >
           {lyrics.map((line, index) => {
             const isActive = index === currentLine;
@@ -164,12 +172,16 @@ export default function Hino() {
               <MotiView
                 key={index}
                 animate={{
-                  scale: isActive ? 1.06 : 1,
-                  opacity: isActive ? 1 : 0.6,
+                  scale: isActive ? 1.05 : 1,
+                  opacity: isActive ? 1 : 0.45,
                 }}
-                transition={{ type: 'timing', duration: 300 }}
+                transition={{ type: 'timing', duration: 250 }}
+                style={[
+                  styles.lyricCard,
+                  isActive && styles.activeLyricCard
+                ]}
               >
-                <Text style={[styles.lyric, isActive && styles.activeLyric]}>
+                <Text style={[styles.lyricText, isActive && styles.activeLyricText]}>
                   {line.text}
                 </Text>
               </MotiView>
@@ -186,102 +198,161 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  headerCard: {
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.07)',
-    borderBottomLeftRadius: 26,
-    borderBottomRightRadius: 26,
-    alignItems: "center",
-    marginBottom: 10,
+  playerDock: {
+    backgroundColor: colors.cardGlass,
+    marginHorizontal: 16,
+    marginTop: 10,
+    marginBottom: 12,
+    padding: 20,
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: colors.cardBorder,
     shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.15,
-    shadowRadius: 10,
+    shadowRadius: 12,
   },
-  subtitle: {
-    color: colors.gold,
+  badgeRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  audioBadge: {
+    backgroundColor: colors.goldLight,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+  },
+  audioBadgeText: {
+    color: colors.goldBright,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  playerTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: colors.text,
+    letterSpacing: -0.3,
+  },
+  playerCredits: {
     fontSize: 12,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    letterSpacing: 1.5,
-    marginBottom: 4,
-  },
-  creditsText: {
     color: colors.textMuted,
-    fontSize: 12,
+    marginTop: 4,
     marginBottom: 16,
+  },
+  highlightCredit: {
+    color: colors.goldChampagne,
+    fontWeight: '600',
   },
   playButton: {
     backgroundColor: colors.gold,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
     borderRadius: 14,
-    width: "100%",
-    elevation: 4,
     shadowColor: colors.gold,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.35,
     shadowRadius: 8,
+    elevation: 4,
+    gap: 8,
   },
   pauseButton: {
-    backgroundColor: "rgba(255, 215, 0, 0.15)",
-    borderWidth: 1.5,
+    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+    borderWidth: 1,
     borderColor: colors.gold,
+    shadowOpacity: 0.1,
+  },
+  playButtonIcon: {
+    fontSize: 14,
+    color: colors.textDark,
+    fontWeight: 'bold',
+  },
+  pauseButtonIcon: {
+    color: colors.goldBright,
   },
   playButtonText: {
-    color: colors.background,
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 15,
+    color: colors.textDark,
+    fontWeight: '900',
+    fontSize: 13,
     letterSpacing: 1,
   },
   pauseButtonText: {
-    color: colors.gold,
+    color: colors.goldBright,
   },
-  progressContainer: {
-    width: "100%",
+  progressSection: {
     marginTop: 16,
   },
   trackBackground: {
-    height: 5,
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    borderRadius: 3,
-    overflow: "hidden",
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 2,
+    overflow: 'hidden',
   },
   trackFill: {
-    height: "100%",
+    height: '100%',
     backgroundColor: colors.gold,
   },
   timeRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 6,
   },
   timeText: {
     color: colors.textSubtle,
     fontSize: 11,
-    fontWeight: "bold",
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
   },
-  lyricsWrapper: {
+  lyricsContainer: {
     flex: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
   },
-  scrollContent: {
-    paddingVertical: 80,
+  lyricsHeaderPill: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    paddingHorizontal: 14,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginVertical: 10,
+    borderWidth: 1,
+    borderColor: colors.cardBorderSubtle,
   },
-  lyric: {
-    fontSize: 18,
+  lyricsHeaderText: {
+    color: colors.textSubtle,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.5,
+  },
+  lyricsScrollContent: {
+    paddingVertical: 20,
+    paddingBottom: 60,
+  },
+  lyricCard: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    marginVertical: 3,
+    alignItems: 'center',
+  },
+  activeLyricCard: {
+    backgroundColor: 'rgba(245, 158, 11, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(245, 158, 11, 0.25)',
+  },
+  lyricText: {
+    fontSize: 16,
     color: colors.textMuted,
-    textAlign: "center",
-    marginVertical: 14,
-    lineHeight: 28,
+    textAlign: 'center',
+    lineHeight: 24,
+    fontWeight: '500',
   },
-  activeLyric: {
-    color: colors.gold,
-    fontSize: 22,
-    fontWeight: "bold",
+  activeLyricText: {
+    color: colors.goldBright,
+    fontSize: 18,
+    fontWeight: '800',
   },
 });

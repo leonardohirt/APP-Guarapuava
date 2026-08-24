@@ -10,8 +10,10 @@ interface LendaItem {
   id: number;
   titulo: string;
   autor: string;
+  tempoLeitura: string;
   historia: string;
-  cor: string;
+  tag: string;
+  corFundo: string;
 }
 
 const listaLendas: LendaItem[] = [
@@ -19,22 +21,28 @@ const listaLendas: LendaItem[] = [
     id: 1, 
     titulo: "Lagoa das Lágrimas", 
     autor: "Nivaldo Krüger",
+    tempoLeitura: "2 min",
+    tag: "AMOR & TRAGÉDIA",
     historia: "Atualmente, a Lagoa está situada em um espaço em que havia um vale profundo. Há muitos anos, os índios ‘Dorin’ se preparavam para um combate contra os inimigos, os ‘Votorão’.\n\nO cacique dos Dorin, jovem e valente, escondia nesse vale crianças, mulheres e anciãos. Contudo, ao se despedir da noiva, ele disse: “vou honrar a coragem de nossa gente, me espere aqui, voltarei para casarmos e termos muitos filhos”.\n\nDurante o combate os Dorin venceram, porém o cacique morreu como um guerreiro valente. Assim, a tribo retornou ao sertão da Serra da Esperança. Entretanto, a noiva ficou esperando o cacique que havia prometido voltar. Assim sendo, deprimida sobre uma laje, ela chorou desconsolada e fiel.\n\nPor fim, alguns invernos mais tarde, os Dorin encontraram nas fendas da laje duas vertentes de águas cristalinas. Assim nasceu a Lagoa das Lágrimas, um espelho d’água que sempre irá refletir essa história, como um símbolo de fidelidade da mulher pelo amor que nunca será esquecido.",
-    cor: "#0f172a"
+    corFundo: "#0e1a2f"
   },
   { 
     id: 2, 
     titulo: "Capela do Degolado", 
     autor: "Tradição Popular (via Lab Dicas)",
+    tempoLeitura: "2 min",
+    tag: "MISTÉRIO & DEVOÇÃO",
     historia: "Um dos marcos mais misteriosos de Guarapuava, a Capela do Degolado guarda a memória de um jovem soldado que, em tempos de conflito, teria desertado em busca de refúgio. Confundido injustamente com um criminoso após buscar comida em uma fazenda, o jovem foi capturado e teve um fim trágico nas proximidades da atual Rua General Carneiro.\n\nA lenda afirma que, por ter sido vítima de uma injustiça fatal, o soldado tornou-se um 'santo popular'. Com o passar das décadas, a pequena capela construída no local da sua morte tornou-se um ponto de intensa devoção.\n\nRelatos de milagres e fenômenos sobrenaturais — como o vulto do soldado zelando pela região e o curioso fato de imagens deixadas no local aparecerem sem a cabeça — mantêm viva a chama desta história que mistura fé, tragédia e o folclore guarapuavano.",
-    cor: "#1e1e2f"
+    corFundo: "#1a162b"
   },
   { 
     id: 3, 
     titulo: "A Serpente da Lagoa", 
     autor: "Tradição Oral",
-    historia: "Durante o século XX, uma história curiosa começou a circular entre mães e professores para evitar que as crianças faltassem às aulas: a existência de uma serpente gigante que dormia entre a Catedral e a Lagoa das Lágrimas.\n\nA versão mais famosa dizia que o despertar da fera ocorrería com a inauguração da estação ferroviária; o apito do primeiro trem a enfureceria, fazendo-a destruir a cidade. Quando o trem chegou e nada aconteceu, a lenda se adaptou: diziam agora que, se a antiga Catedral fosse demolida para a construção de uma nova, o animal acordaria.\n\nCuriosamente, essa crença popular foi tão forte que ajudou a interromper planos de demolição da igreja na época. Assim, entre o medo e o respeito à tradição, a Catedral permaneceu de pé e Guarapuava seguiu salva da fúria da serpente, que — segundo contam os antigos — continua em seu sono profundo sob nossas águas.",
-    cor: "#064e3b"
+    tempoLeitura: "3 min",
+    tag: "FOLCLORE URBANO",
+    historia: "Durante o século XX, uma história curiosa começou a circular entre mães e professores para evitar que as crianças faltassem às aulas: a existência de uma serpente gigante que dormia entre a Catedral e a Lagoa das Lágrimas.\n\nA versão mais famosa dizia que o despertar da fera ocorreria com a inauguração da estação ferroviária; o apito do primeiro trem a enfureceria, fazendo-a destruir a cidade. Quando o trem chegou e nada aconteceu, a lenda se adaptou: diziam agora que, se a antiga Catedral fosse demolida para a construção de uma nova, o animal acordaria.\n\nCuriosamente, essa crença popular foi tão forte que ajudou a interromper planos de demolição da igreja na época. Assim, entre o medo e o respeito à tradição, a Catedral permaneceu de pé e Guarapuava seguiu salva da fúria da serpente, que — segundo contam os antigos — continua em seu sono profundo sob nossas águas.",
+    corFundo: "#09241b"
   }
 ];
 
@@ -83,58 +91,68 @@ export default function Lendas() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Stack.Screen options={{ 
-        title: "Lendas e Contos", 
+        title: "Mitos e Lendas", 
         headerStyle: { backgroundColor: colors.background }, 
         headerTintColor: colors.text 
       }} />
       
+      {/* HEADER SECTION */}
       <View style={styles.header}>
+        <View style={styles.headerBadge}>
+          <Text style={styles.headerBadgeText}>FOLCLORE & IMAGINÁRIO</Text>
+        </View>
         <Text style={styles.headerTitle}>Contos da Nossa Terra</Text>
-        <Text style={styles.headerSubtitle}>Toque no card para abrir o leitor em tela cheia.</Text>
+        <Text style={styles.headerSubtitle}>
+          Histórias transmitidas de geração em geração pelo imaginário popular.
+        </Text>
       </View>
 
+      {/* LISTA DE CARDS DE LENDAS */}
       <View style={styles.list}>
         {listaLendas.map((item, index) => (
           <MotiView 
             key={item.id}
             from={{ opacity: 0, translateY: 20 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: index * 200, type: 'timing', duration: 800 }}
+            transition={{ delay: index * 120, type: 'timing', duration: 500 }}
           >
             <Pressable 
-              style={[styles.card, { backgroundColor: item.cor }]}
+              style={[styles.card, { backgroundColor: item.corFundo }]}
               onPress={() => abrirLeitura(item)}
             >
-              <View style={styles.cardContent}>
-                <View style={styles.cardHeaderRow}>
-                  <Text style={styles.cardTitle}>{item.titulo.toUpperCase()}</Text>
-                  
-                  {/* BOTÃO OUVIR NO CARD */}
-                  <TouchableOpacity 
-                    style={styles.speechButton}
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      toggleSpeech(item);
-                    }}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={styles.speechButtonText}>
-                      {speakingId === item.id ? "⏹️ PARAR" : "🔊 OUVIR"}
-                    </Text>
-                  </TouchableOpacity>
+              <View style={styles.cardHeaderRow}>
+                <View style={styles.tagPill}>
+                  <Text style={styles.tagPillText}>{item.tag}</Text>
                 </View>
-                
-                <Text style={styles.cardAuthor}>Por {item.autor}</Text>
-                
-                <Text style={styles.cardPreview} numberOfLines={3}>
-                  {item.historia}
-                </Text>
-                
-                <View style={styles.divider} />
-                
-                <View style={styles.cardFooterRow}>
-                  <Text style={styles.cardReadMore}>📖 LER HISTÓRIA COMPLETA</Text>
-                  <Text style={{ color: colors.gold, fontSize: 16 }}>→</Text>
+
+                {/* BOTÃO OUVIR NO CARD */}
+                <TouchableOpacity 
+                  style={styles.speechPill}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    toggleSpeech(item);
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.speechPillText}>
+                    {speakingId === item.id ? "⏹ PARAR" : "🔊 OUVIR"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.cardTitle}>{item.titulo}</Text>
+              <Text style={styles.cardAuthor}>Por {item.autor} • {item.tempoLeitura} leitura</Text>
+              
+              <Text style={styles.cardPreview} numberOfLines={3}>
+                {item.historia}
+              </Text>
+              
+              <View style={styles.divider} />
+              
+              <View style={styles.cardFooterRow}>
+                <Text style={styles.cardReadMore}>ABRIR HISTÓRIA COMPLETA</Text>
+                <View style={styles.footerArrowContainer}>
+                  <Text style={styles.footerArrow}>→</Text>
                 </View>
               </View>
             </Pressable>
@@ -142,10 +160,10 @@ export default function Lendas() {
         ))}
       </View>
       
-      <Text style={styles.footerText}>Fonte: Historiografia e Tradição Popular</Text>
+      <Text style={styles.footerText}>Fonte: Historiografia e Tradição Popular de Guarapuava</Text>
       <View style={{ height: 40 }} />
 
-      {/* MODAL / LEITOR EM TELA CHEIA */}
+      {/* MODAL LEITOR EM TELA CHEIA */}
       <Modal
         visible={!!lendaSelecionada}
         animationType="slide"
@@ -159,10 +177,10 @@ export default function Lendas() {
               animate={{ opacity: 1, translateY: 0 }}
               style={styles.modalContent}
             >
-              {/* CABEÇALHO DO LEITOR */}
-              <View style={styles.modalHeader}>
-                <TouchableOpacity onPress={fecharLeitura} style={styles.backButton}>
-                  <Text style={styles.backButtonText}>← Fechar</Text>
+              {/* BARRA SUPERIOR DO LEITOR */}
+              <View style={styles.modalToolbar}>
+                <TouchableOpacity onPress={fecharLeitura} style={styles.modalCloseButton} activeOpacity={0.7}>
+                  <Text style={styles.modalCloseButtonText}>← Fechar</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -171,28 +189,34 @@ export default function Lendas() {
                   activeOpacity={0.8}
                 >
                   <Text style={styles.modalSpeechButtonText}>
-                    {speakingId === lendaSelecionada.id ? "⏹️ PARAR VOZ" : "🔊 OUVIR EM VOZ ALTA"}
+                    {speakingId === lendaSelecionada.id ? "⏹ PARAR VOZ" : "🔊 OUVIR EM VOZ ALTA"}
                   </Text>
                 </TouchableOpacity>
               </View>
 
               <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.readerScroll}>
+                <View style={styles.modalHeaderPill}>
+                  <Text style={styles.modalHeaderPillText}>{lendaSelecionada.tag}</Text>
+                </View>
+
                 <Text style={styles.modalTitle}>{lendaSelecionada.titulo}</Text>
-                <View style={styles.authorBadge}>
-                  <Text style={styles.authorBadgeText}>✍️ Relatado por: {lendaSelecionada.autor}</Text>
+                
+                <View style={styles.authorRow}>
+                  <Text style={styles.authorLabel}>✍️ Relatado por:</Text>
+                  <Text style={styles.authorName}>{lendaSelecionada.autor}</Text>
                 </View>
 
                 <View style={styles.modalDivider} />
 
-                {/* HISTÓRIA PARÁGRAFO POR PARÁGRAFO */}
+                {/* PARÁGRAFOS FORMATADOS */}
                 {lendaSelecionada.historia.split("\n\n").map((paragrafo, idx) => (
                   <Text key={idx} style={styles.modalParagraph}>
                     {paragrafo}
                   </Text>
                 ))}
 
-                <TouchableOpacity style={styles.closeModalButton} onPress={fecharLeitura}>
-                  <Text style={styles.closeModalButtonText}>CONCLUIR LEITURA ✕</Text>
+                <TouchableOpacity style={styles.closeModalBottomButton} onPress={fecharLeitura} activeOpacity={0.85}>
+                  <Text style={styles.closeModalBottomButtonText}>CONCLUIR LEITURA ✕</Text>
                 </TouchableOpacity>
               </ScrollView>
             </MotiView>
@@ -204,144 +228,258 @@ export default function Lendas() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
-  header: { padding: 30, alignItems: 'flex-start' },
-  headerTitle: { fontSize: 32, fontWeight: 'bold', color: colors.gold, letterSpacing: 1 },
-  headerSubtitle: { color: colors.textMuted, marginTop: 8, fontSize: 14, lineHeight: 20 },
-  list: { paddingHorizontal: 20 },
-  card: { 
-    padding: 24, 
-    borderRadius: 16, 
-    marginBottom: 20, 
-    borderLeftWidth: 4,
-    borderLeftColor: colors.gold,
-    borderWidth: 1,
-    borderColor: "rgba(255, 215, 0, 0.25)",
-    elevation: 4,
-    shadowColor: colors.gold,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  cardContent: { flex: 1 },
-  cardHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cardTitle: { color: '#f1f5f9', fontSize: 18, fontWeight: 'bold', letterSpacing: 1, flex: 1 },
-  speechButton: {
-    backgroundColor: 'rgba(255, 215, 0, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+  header: {
+    padding: 20,
+    paddingTop: 16,
+  },
+  headerBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.goldLight,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors.gold,
-    marginLeft: 8,
+    borderColor: colors.cardBorder,
+    marginBottom: 10,
   },
-  speechButtonText: {
-    color: colors.gold,
+  headerBadgeText: {
+    color: colors.goldBright,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: colors.text,
+    letterSpacing: -0.3,
+  },
+  headerSubtitle: {
+    color: colors.textMuted,
+    marginTop: 6,
+    fontSize: 13,
+    lineHeight: 19,
+  },
+  list: {
+    paddingHorizontal: 16,
+  },
+  card: {
+    padding: 20,
+    borderRadius: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+  },
+  cardHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  tagPill: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  tagPillText: {
+    color: colors.goldChampagne,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+  },
+  speechPill: {
+    backgroundColor: colors.goldLight,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+  },
+  speechPillText: {
+    color: colors.goldBright,
     fontSize: 11,
+    fontWeight: '800',
+  },
+  cardTitle: {
+    color: colors.text,
+    fontSize: 20,
+    fontWeight: '900',
+    marginBottom: 4,
+  },
+  cardAuthor: {
+    color: colors.gold,
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+  cardPreview: {
+    color: colors.textMuted,
+    fontSize: 13,
+    lineHeight: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.cardBorderSubtle,
+    marginVertical: 14,
+  },
+  cardFooterRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardReadMore: {
+    color: colors.goldBright,
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+  },
+  footerArrowContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.goldLight,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerArrow: {
+    color: colors.goldBright,
+    fontSize: 12,
     fontWeight: 'bold',
   },
-  cardAuthor: { color: colors.gold, fontSize: 11, fontWeight: '700', marginTop: 6, marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1 },
-  cardPreview: { color: '#94a3b8', fontSize: 14, lineHeight: 22, fontStyle: 'italic' },
-  divider: { height: 1, backgroundColor: 'rgba(148, 163, 184, 0.15)', marginVertical: 16 },
-  cardFooterRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  cardReadMore: { color: colors.gold, fontSize: 12, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: 1 },
-  footerText: { textAlign: 'center', color: colors.textSubtle, fontSize: 11, marginTop: 30, letterSpacing: 1 },
+  footerText: {
+    textAlign: 'center',
+    color: colors.textSubtle,
+    fontSize: 11,
+    marginTop: 20,
+    fontStyle: 'italic',
+  },
 
-  // ESTILOS DO LEITOR EM TELA CHEIA (MODAL)
+  // MODAL LEITOR EM TELA CHEIA
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(7, 21, 39, 0.96)",
-    justifyContent: "flex-end",
+    backgroundColor: 'rgba(4, 8, 16, 0.95)',
+    justifyContent: 'flex-end',
   },
   modalContent: {
     flex: 1,
-    backgroundColor: colors.backgroundDark,
-    marginTop: 50,
+    backgroundColor: colors.backgroundElevated,
+    marginTop: 40,
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
-    paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingHorizontal: 22,
+    paddingTop: 18,
     borderTopWidth: 1,
-    borderColor: "rgba(255, 215, 0, 0.3)",
+    borderColor: colors.cardBorder,
   },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
+  modalToolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 18,
   },
-  backButton: {
+  modalCloseButton: {
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     borderRadius: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    backgroundColor: colors.cardGlass,
+    borderWidth: 1,
+    borderColor: colors.cardBorderSubtle,
   },
-  backButtonText: {
+  modalCloseButtonText: {
     color: colors.text,
-    fontSize: 14,
-    fontWeight: "bold",
+    fontSize: 13,
+    fontWeight: '700',
   },
   modalSpeechButton: {
     backgroundColor: colors.gold,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 12,
+    borderRadius: 10,
+    shadowColor: colors.gold,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   modalSpeechButtonText: {
-    color: colors.background,
-    fontSize: 12,
-    fontWeight: "bold",
+    color: colors.textDark,
+    fontSize: 11,
+    fontWeight: '900',
     letterSpacing: 0.5,
   },
   readerScroll: {
     paddingBottom: 40,
   },
-  modalTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: colors.gold,
-    marginBottom: 8,
-    lineHeight: 34,
-  },
-  authorBadge: {
-    alignSelf: "flex-start",
-    backgroundColor: "rgba(255, 215, 0, 0.12)",
-    paddingHorizontal: 12,
+  modalHeaderPill: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.goldLight,
+    paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 8,
+    borderRadius: 6,
     borderWidth: 1,
-    borderColor: colors.gold,
-    marginBottom: 16,
+    borderColor: colors.cardBorder,
+    marginBottom: 10,
   },
-  authorBadgeText: {
-    color: colors.gold,
+  modalHeaderPillText: {
+    color: colors.goldBright,
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  modalTitle: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: colors.text,
+    marginBottom: 8,
+    lineHeight: 32,
+  },
+  authorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 14,
+  },
+  authorLabel: {
+    color: colors.textSubtle,
     fontSize: 12,
-    fontWeight: "600",
+  },
+  authorName: {
+    color: colors.goldChampagne,
+    fontSize: 12,
+    fontWeight: '700',
   },
   modalDivider: {
     height: 1,
-    backgroundColor: "rgba(255, 215, 0, 0.2)",
-    marginBottom: 20,
-  },
-  modalParagraph: {
-    color: "#e2e8f0",
-    fontSize: 16,
-    lineHeight: 26,
+    backgroundColor: colors.cardBorderSubtle,
     marginBottom: 18,
   },
-  closeModalButton: {
-    backgroundColor: "rgba(255, 215, 0, 0.15)",
+  modalParagraph: {
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 25,
+    marginBottom: 16,
+  },
+  closeModalBottomButton: {
+    backgroundColor: 'rgba(245, 158, 11, 0.12)',
     borderWidth: 1,
     borderColor: colors.gold,
-    paddingVertical: 16,
+    paddingVertical: 15,
     borderRadius: 14,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 20,
   },
-  closeModalButtonText: {
-    color: colors.gold,
-    fontWeight: "bold",
-    fontSize: 14,
+  closeModalBottomButtonText: {
+    color: colors.goldBright,
+    fontWeight: '900',
+    fontSize: 13,
     letterSpacing: 1,
-  }
+  },
 });
