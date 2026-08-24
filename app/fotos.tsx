@@ -1,9 +1,9 @@
 import { Stack } from "expo-router";
 import { MotiView } from 'moti';
 import React, { useState } from 'react';
+import { Image } from "expo-image";
 import {
   Dimensions,
-  Image,
   Modal,
   Pressable,
   ScrollView,
@@ -159,7 +159,12 @@ export default function FotosHistoricas() {
                 style={styles.imageWrapper}
                 onPress={() => setImgSelecionada({ src: marco.imagemAntiga, titulo: marco.titulo, legenda: "Registro Histórico Antigo" })}
               >
-                <Image source={marco.imagemAntiga} style={styles.imageThumb} resizeMode="cover" />
+                <Image 
+                  source={marco.imagemAntiga} 
+                  style={styles.imageThumb} 
+                  contentFit="cover" 
+                  transition={200}
+                />
                 <View style={[styles.labelTag, styles.tagAntiga]}>
                   <Text style={styles.labelText}>ANTIGA</Text>
                 </View>
@@ -170,7 +175,12 @@ export default function FotosHistoricas() {
                 style={styles.imageWrapper}
                 onPress={() => setImgSelecionada({ src: marco.imagemAtual, titulo: marco.titulo, legenda: "Registro Atual" })}
               >
-                <Image source={marco.imagemAtual} style={styles.imageThumb} resizeMode="cover" />
+                <Image 
+                  source={marco.imagemAtual} 
+                  style={styles.imageThumb} 
+                  contentFit="cover" 
+                  transition={200}
+                />
                 <View style={[styles.labelTag, styles.tagAtual]}>
                   <Text style={styles.labelText}>ATUAL</Text>
                 </View>
@@ -205,7 +215,8 @@ export default function FotosHistoricas() {
               <Image 
                 source={imgSelecionada.src} 
                 style={styles.lightboxImage} 
-                resizeMode="contain" 
+                contentFit="contain" 
+                transition={200}
               />
               <View style={styles.lightboxCaptionBox}>
                 <Text style={styles.lightboxTitle}>{imgSelecionada.titulo}</Text>
