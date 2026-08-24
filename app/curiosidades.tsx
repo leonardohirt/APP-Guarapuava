@@ -84,6 +84,14 @@ const listaCuriosidades = [
     pergunta: "A Menina Radiante", 
     resposta: "Apelido poético imortalizado nos versos do hino, exaltando o brilho do sol sobre os campos dourados da cidade.", 
     corFundo: "#1c0b2b" 
+  },
+  { 
+    id: 11, 
+    numero: "#11",
+    emoji: "🕊️",
+    pergunta: "Belmiro de Miranda", 
+    resposta: "Ex-escravizado que comprou a própria alforria trabalhando em noites enluaradas e libertou mais de 50 pessoas escravizadas em Guarapuava.", 
+    corFundo: "#191206" 
   }
 ];
 

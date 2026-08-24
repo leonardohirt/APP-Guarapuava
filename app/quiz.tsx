@@ -89,10 +89,16 @@ const allQuestions: QuestionItem[] = [
     explanation: "'Guará' significa lobo-guará e 'Puava' significa bravo ou barulho que ecoa.",
   },
   {
-    question: "Qual é a maior queda d'água do Sul do Brasil na região?",
-    options: ["Cataratas do Iguaçu", "Salto São Francisco", "Salto São João", "Salto do Rio Branco"],
-    correctAnswer: "Salto São Francisco",
-    explanation: "O Salto São Francisco possui impressionantes 196 metros de queda livre contínua.",
+    question: "Quem foi o mestre de obras e abolicionista que libertou mais de 50 escravizados em Guarapuava?",
+    options: ["Belmiro de Miranda", "Pedro de Siqueira Côrtes", "Visconde de Guarapuava", "Diogo Pinto"],
+    correctAnswer: "Belmiro de Miranda",
+    explanation: "Belmiro de Miranda comprou sua própria alforria trabalhando em noites enluaradas e, ao lado de sua esposa Ezidia, comprou a alforria de mais de 50 pessoas escravizadas.",
+  },
+  {
+    question: "Com qual grande líder abolicionista nacional Belmiro de Miranda mantinha correspondência?",
+    options: ["José do Patrocínio", "Joaquim Nabuco", "Castro Alves", "Rui Barbosa"],
+    correctAnswer: "José do Patrocínio",
+    explanation: "Belmiro recebia cartas de José do Patrocínio, decorava as mensagens e discursava nas senzalas e praças de Guarapuava mantendo viva a esperança da liberdade.",
   },
 ];
 

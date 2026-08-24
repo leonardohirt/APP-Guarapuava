@@ -121,6 +121,16 @@ export default function Config() {
               <Text style={styles.creditValue}>Museu Municipal Visconde de Guarapuava</Text>
             </View>
           </View>
+
+          <View style={styles.creditDivider} />
+
+          <View style={styles.creditItem}>
+            <Text style={styles.creditIcon}>📖</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.creditLabel}>Pesquisa & Biografias Históricas</Text>
+              <Text style={styles.creditValue}>ALAC (Academia de Letras, Artes e Ciências)</Text>
+            </View>
+          </View>
         </View>
       </MotiView>
 
