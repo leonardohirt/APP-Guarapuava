@@ -58,8 +58,35 @@ const listaLendas: LendaItem[] = [
 export default function Lendas() {
   const [speakingId, setSpeakingId] = useState<number | null>(null);
   const [lendaSelecionada, setLendaSelecionada] = useState<LendaItem | null>(null);
+  const [naturalVoiceIdentifier, setNaturalVoiceIdentifier] = useState<string | undefined>(undefined);
 
+  // Buscar a melhor voz humana em português disponível no aparelho
   useEffect(() => {
+    async function selectBestVoice() {
+      try {
+        const voices = await Speech.getAvailableVoicesAsync();
+        const ptVoices = voices.filter(
+          (v) => v.language.startsWith("pt") || v.language === "pt-BR" || v.language === "pt_BR"
+        );
+        
+        // Priorizar vozes neurais / naturais do Google ou Enhanced do iOS/Android
+        const bestVoice = ptVoices.find(
+          (v) =>
+            v.identifier.includes("network") ||
+            v.identifier.includes("natural") ||
+            v.identifier.includes("premium") ||
+            v.quality === Speech.VoiceQuality.Enhanced
+        ) || ptVoices[0];
+
+        if (bestVoice) {
+          setNaturalVoiceIdentifier(bestVoice.identifier);
+        }
+      } catch (err) {
+        // Fallback gracioso
+      }
+    }
+    selectBestVoice();
+
     return () => {
       Speech.stop();
     };
@@ -73,9 +100,13 @@ export default function Lendas() {
     } else {
       Speech.stop();
       setSpeakingId(item.id);
-      Speech.speak(`${item.titulo}. Por ${item.autor}. ${item.historia}`, {
+      
+      // Calibração de fala humana: ritmo pausado, entonação calma e voz selecionada
+      Speech.speak(`${item.titulo}. Narrado a partir de ${item.autor}. ${item.historia}`, {
         language: "pt-BR",
-        rate: 0.95,
+        voice: naturalVoiceIdentifier,
+        rate: 0.88, // Ritmo confortável e pausado de audiolivro
+        pitch: 0.98, // Tom natural e acústico
         onDone: () => setSpeakingId(null),
         onStopped: () => setSpeakingId(null),
         onError: () => setSpeakingId(null),
@@ -108,68 +139,75 @@ export default function Lendas() {
       {/* HEADER SECTION */}
       <View style={styles.header}>
         <View style={styles.headerBadge}>
-          <Text style={styles.headerBadgeText}>FOLCLORE & IMAGINÁRIO</Text>
+          <Text style={styles.headerBadgeText}>FOLCLORE & HISTÓRIAS DA TERRA</Text>
         </View>
-        <Text style={styles.headerTitle}>Contos da Nossa Terra</Text>
+        <Text style={styles.headerTitle}>Contos e Memórias</Text>
         <Text style={styles.headerSubtitle}>
-          Histórias transmitidas de geração em geração pelo imaginário popular.
+          Toque para abrir o leitor imersivo ou ouça a narração em áudio.
         </Text>
       </View>
 
       {/* LISTA DE CARDS DE LENDAS */}
       <View style={styles.list}>
-        {listaLendas.map((item, index) => (
-          <MotiView 
-            key={item.id}
-            from={{ opacity: 0, translateY: 20 }}
-            animate={{ opacity: 1, translateY: 0 }}
-            transition={{ delay: index * 120, type: 'timing', duration: 500 }}
-          >
-            <Pressable 
-              style={[styles.card, { backgroundColor: item.corFundo }]}
-              onPress={() => abrirLeitura(item)}
+        {listaLendas.map((item, index) => {
+          const isPlaying = speakingId === item.id;
+          return (
+            <MotiView 
+              key={item.id}
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ delay: index * 100, type: 'timing', duration: 450 }}
             >
-              <View style={styles.cardHeaderRow}>
-                <View style={styles.tagPill}>
-                  <Text style={styles.tagPillText}>{item.tag}</Text>
+              <Pressable 
+                style={[
+                  styles.card, 
+                  { backgroundColor: item.corFundo },
+                  isPlaying && styles.cardActivePlaying
+                ]}
+                onPress={() => abrirLeitura(item)}
+              >
+                <View style={styles.cardHeaderRow}>
+                  <View style={styles.tagPill}>
+                    <Text style={styles.tagPillText}>{item.tag}</Text>
+                  </View>
+
+                  {/* BOTÃO NARRAR */}
+                  <TouchableOpacity 
+                    style={[styles.speechPill, isPlaying && styles.speechPillActive]}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      toggleSpeech(item);
+                    }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[styles.speechPillText, isPlaying && styles.speechPillTextActive]}>
+                      {isPlaying ? "⏹ PAUSAR VOZ" : "🎙️ OUVIR HISTÓRIA"}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
 
-                {/* BOTÃO OUVIR NO CARD */}
-                <TouchableOpacity 
-                  style={styles.speechPill}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    toggleSpeech(item);
-                  }}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.speechPillText}>
-                    {speakingId === item.id ? "⏹ PARAR" : "🔊 OUVIR"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <Text style={styles.cardTitle}>{item.titulo}</Text>
-              <Text style={styles.cardAuthor}>Por {item.autor} • {item.tempoLeitura} leitura</Text>
-              
-              <Text style={styles.cardPreview} numberOfLines={3}>
-                {item.historia}
-              </Text>
-              
-              <View style={styles.divider} />
-              
-              <View style={styles.cardFooterRow}>
-                <Text style={styles.cardReadMore}>ABRIR HISTÓRIA COMPLETA</Text>
-                <View style={styles.footerArrowContainer}>
-                  <Text style={styles.footerArrow}>→</Text>
+                <Text style={styles.cardTitle}>{item.titulo}</Text>
+                <Text style={styles.cardAuthor}>Por {item.autor} • {item.tempoLeitura} leitura</Text>
+                
+                <Text style={styles.cardPreview} numberOfLines={3}>
+                  {item.historia}
+                </Text>
+                
+                <View style={styles.divider} />
+                
+                <View style={styles.cardFooterRow}>
+                  <Text style={styles.cardReadMore}>ABRIR HISTÓRIA COMPLETA</Text>
+                  <View style={styles.footerArrowContainer}>
+                    <Text style={styles.footerArrow}>→</Text>
+                  </View>
                 </View>
-              </View>
-            </Pressable>
-          </MotiView>
-        ))}
+              </Pressable>
+            </MotiView>
+          );
+        })}
       </View>
       
-      <Text style={styles.footerText}>Fonte: Historiografia e Tradição Popular de Guarapuava</Text>
+      <Text style={styles.footerText}>Fonte: Historiografia e Tradição Popular de Guarapuava • ALAC</Text>
       <View style={{ height: 40 }} />
 
       {/* MODAL LEITOR EM TELA CHEIA */}
@@ -180,56 +218,71 @@ export default function Lendas() {
         onRequestClose={fecharLeitura}
       >
         <View style={styles.modalOverlay}>
-          {lendaSelecionada && (
-            <MotiView 
-              from={{ opacity: 0, translateY: 40 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              style={styles.modalContent}
-            >
-              {/* BARRA SUPERIOR DO LEITOR */}
-              <View style={styles.modalToolbar}>
-                <TouchableOpacity onPress={fecharLeitura} style={styles.modalCloseButton} activeOpacity={0.7}>
-                  <Text style={styles.modalCloseButtonText}>← Fechar</Text>
-                </TouchableOpacity>
+          {lendaSelecionada && (() => {
+            const isModalPlaying = speakingId === lendaSelecionada.id;
+            return (
+              <MotiView 
+                from={{ opacity: 0, translateY: 40 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                style={styles.modalContent}
+              >
+                {/* BARRA SUPERIOR DO LEITOR */}
+                <View style={styles.modalToolbar}>
+                  <TouchableOpacity onPress={fecharLeitura} style={styles.modalCloseButton} activeOpacity={0.7}>
+                    <Text style={styles.modalCloseButtonText}>← Fechar</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={styles.modalSpeechButton}
-                  onPress={() => toggleSpeech(lendaSelecionada)}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.modalSpeechButtonText}>
-                    {speakingId === lendaSelecionada.id ? "⏹ PARAR VOZ" : "🔊 OUVIR EM VOZ ALTA"}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.readerScroll}>
-                <View style={styles.modalHeaderPill}>
-                  <Text style={styles.modalHeaderPillText}>{lendaSelecionada.tag}</Text>
+                  <TouchableOpacity 
+                    style={[styles.modalSpeechButton, isModalPlaying && styles.modalSpeechButtonActive]}
+                    onPress={() => toggleSpeech(lendaSelecionada)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.modalSpeechButtonText, isModalPlaying && styles.modalSpeechButtonTextActive]}>
+                      {isModalPlaying ? "⏹ PARAR VOZ" : "🎙️ OUVIR EM VOZ ALTA"}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
 
-                <Text style={styles.modalTitle}>{lendaSelecionada.titulo}</Text>
-                
-                <View style={styles.authorRow}>
-                  <Text style={styles.authorLabel}>✍️ Relatado por:</Text>
-                  <Text style={styles.authorName}>{lendaSelecionada.autor}</Text>
-                </View>
+                {/* DOCK DE STATUS DE NARRAÇÃO */}
+                {isModalPlaying && (
+                  <MotiView
+                    from={{ opacity: 0, scaleY: 0.8 }}
+                    animate={{ opacity: 1, scaleY: 1 }}
+                    style={styles.narrationStatusDock}
+                  >
+                    <View style={styles.pulseDot} />
+                    <Text style={styles.narrationStatusText}>Narrador de voz natural ativado (Audiolivro)...</Text>
+                  </MotiView>
+                )}
 
-                <View style={styles.modalDivider} />
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.readerScroll}>
+                  <View style={styles.modalHeaderPill}>
+                    <Text style={styles.modalHeaderPillText}>{lendaSelecionada.tag}</Text>
+                  </View>
 
-                {/* PARÁGRAFOS FORMATADOS */}
-                {lendaSelecionada.historia.split("\n\n").map((paragrafo, idx) => (
-                  <Text key={idx} style={styles.modalParagraph}>
-                    {paragrafo}
-                  </Text>
-                ))}
+                  <Text style={styles.modalTitle}>{lendaSelecionada.titulo}</Text>
+                  
+                  <View style={styles.authorRow}>
+                    <Text style={styles.authorLabel}>✍️ Fonte e Relato:</Text>
+                    <Text style={styles.authorName}>{lendaSelecionada.autor}</Text>
+                  </View>
 
-                <TouchableOpacity style={styles.closeModalBottomButton} onPress={fecharLeitura} activeOpacity={0.85}>
-                  <Text style={styles.closeModalBottomButtonText}>CONCLUIR LEITURA ✕</Text>
-                </TouchableOpacity>
-              </ScrollView>
-            </MotiView>
-          )}
+                  <View style={styles.modalDivider} />
+
+                  {/* PARÁGRAFOS FORMATADOS */}
+                  {lendaSelecionada.historia.split("\n\n").map((paragrafo, idx) => (
+                    <Text key={idx} style={styles.modalParagraph}>
+                      {paragrafo}
+                    </Text>
+                  ))}
+
+                  <TouchableOpacity style={styles.closeModalBottomButton} onPress={fecharLeitura} activeOpacity={0.85}>
+                    <Text style={styles.closeModalBottomButtonText}>CONCLUIR LEITURA ✕</Text>
+                  </TouchableOpacity>
+                </ScrollView>
+              </MotiView>
+            );
+          })()}
         </View>
       </Modal>
     </ScrollView>
@@ -287,6 +340,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 10,
   },
+  cardActivePlaying: {
+    borderColor: colors.gold,
+    shadowOpacity: 0.3,
+  },
   cardHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -307,16 +364,22 @@ const styles = StyleSheet.create({
   },
   speechPill: {
     backgroundColor: colors.goldLight,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.cardBorder,
+  },
+  speechPillActive: {
+    backgroundColor: colors.gold,
   },
   speechPillText: {
     color: colors.goldBright,
     fontSize: 11,
     fontWeight: '800',
+  },
+  speechPillTextActive: {
+    color: colors.textDark,
   },
   cardTitle: {
     color: colors.text,
@@ -370,6 +433,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginTop: 20,
     fontStyle: 'italic',
+    paddingHorizontal: 20,
   },
 
   // MODAL LEITOR EM TELA CHEIA
@@ -393,7 +457,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 18,
+    marginBottom: 14,
   },
   modalCloseButton: {
     paddingVertical: 8,
@@ -418,11 +482,42 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
+  modalSpeechButtonActive: {
+    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+    borderWidth: 1,
+    borderColor: colors.ruby,
+  },
   modalSpeechButtonText: {
     color: colors.textDark,
     fontSize: 11,
     fontWeight: '900',
     letterSpacing: 0.5,
+  },
+  modalSpeechButtonTextActive: {
+    color: colors.ruby,
+  },
+  narrationStatusDock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,
+    marginBottom: 14,
+    gap: 8,
+  },
+  pulseDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.gold,
+  },
+  narrationStatusText: {
+    color: colors.goldChampagne,
+    fontSize: 11,
+    fontWeight: '700',
   },
   readerScroll: {
     paddingBottom: 40,
@@ -444,11 +539,11 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   modalTitle: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: '900',
     color: colors.text,
     marginBottom: 8,
-    lineHeight: 32,
+    lineHeight: 30,
   },
   authorRow: {
     flexDirection: 'row',
