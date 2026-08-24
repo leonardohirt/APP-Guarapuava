@@ -1,8 +1,8 @@
 import * as Haptics from "expo-haptics";
+import { Audio } from "expo-av";
 import { Stack } from "expo-router";
-import * as Speech from "expo-speech";
 import { MotiView } from "moti";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors } from "@/constants/colors";
 
@@ -14,6 +14,7 @@ interface LendaItem {
   historia: string;
   tag: string;
   corFundo: string;
+  audioFile: any;
 }
 
 const listaLendas: LendaItem[] = [
@@ -23,6 +24,7 @@ const listaLendas: LendaItem[] = [
     autor: "Nivaldo Krüger",
     tempoLeitura: "2 min",
     tag: "AMOR & TRAGÉDIA",
+    audioFile: require("../assets/audio/lendas/lenda_lagoa.mp3"),
     historia: "Atualmente, a Lagoa está situada em um espaço em que havia um vale profundo. Há muitos anos, os índios ‘Dorin’ se preparavam para um combate contra os inimigos, os ‘Votorão’.\n\nO cacique dos Dorin, jovem e valente, escondia nesse vale crianças, mulheres e anciãos. Contudo, ao se despedir da noiva, ele disse: “vou honrar a coragem de nossa gente, me espere aqui, voltarei para casarmos e termos muitos filhos”.\n\nDurante o combate os Dorin venceram, porém o cacique morreu como um guerreiro valente. Assim, a tribo retornou ao sertão da Serra da Esperança. Entretanto, a noiva ficou esperando o cacique que havia prometido voltar. Assim sendo, deprimida sobre uma laje, ela chorou desconsolada e fiel.\n\nPor fim, alguns invernos mais tarde, os Dorin encontraram nas fendas da laje duas vertentes de águas cristalinas. Assim nasceu a Lagoa das Lágrimas, um espelho d’água que sempre irá refletir essa história, como um símbolo de fidelidade da mulher pelo amor que nunca será esquecido.",
     corFundo: "#0e1a2f"
   },
@@ -32,6 +34,7 @@ const listaLendas: LendaItem[] = [
     autor: "Tradição Popular (via Lab Dicas)",
     tempoLeitura: "2 min",
     tag: "MISTÉRIO & DEVOÇÃO",
+    audioFile: require("../assets/audio/lendas/lenda_degolado.mp3"),
     historia: "Um dos marcos mais misteriosos de Guarapuava, a Capela do Degolado guarda a memória de um jovem soldado que, em tempos de conflito, teria desertado em busca de refúgio. Confundido injustamente com um criminoso após buscar comida em uma fazenda, o jovem foi capturado e teve um fim trágico nas proximidades da atual Rua General Carneiro.\n\nA lenda afirma que, por ter sido vítima de uma injustiça fatal, o soldado tornou-se um 'santo popular'. Com o passar das décadas, a pequena capela construída no local da sua morte tornou-se um ponto de intensa devoção.\n\nRelatos de milagres e fenômenos sobrenaturais — como o vulto do soldado zelando pela região e o curioso fato de imagens deixadas no local aparecerem sem a cabeça — mantêm viva a chama desta história que mistura fé, tragédia e o folclore guarapuavano.",
     corFundo: "#1a162b"
   },
@@ -41,6 +44,7 @@ const listaLendas: LendaItem[] = [
     autor: "Tradição Oral",
     tempoLeitura: "3 min",
     tag: "FOLCLORE URBANO",
+    audioFile: require("../assets/audio/lendas/lenda_serpente.mp3"),
     historia: "Durante o século XX, uma história curiosa começou a circular entre mães e professores para evitar que as crianças faltassem às aulas: a existência de uma serpente gigante que dormia entre a Catedral e a Lagoa das Lágrimas.\n\nA versão mais famosa dizia que o despertar da fera ocorreria com a inauguração da estação ferroviária; o apito do primeiro trem a enfureceria, fazendo-a destruir a cidade. Quando o trem chegou e nada aconteceu, a lenda se adaptou: diziam agora que, se a antiga Catedral fosse demolida para a construção de uma nova, o animal acordaria.\n\nCuriosamente, essa crença popular foi tão forte que ajudou a interromper planos de demolição da igreja na época. Assim, entre o medo e o respeito à tradição, a Catedral permaneceu de pé e Guarapuava seguiu salva da fúria da serpente, que — segundo contam os antigos — continua em seu sono profundo sob nossas águas.",
     corFundo: "#09241b"
   },
@@ -50,69 +54,93 @@ const listaLendas: LendaItem[] = [
     autor: "ALAC (Acad. de Letras, Artes e Ciências)",
     tempoLeitura: "4 min",
     tag: "HERÓI & ABOLICIONISTA",
+    audioFile: require("../assets/audio/lendas/lenda_belmiro.mp3"),
     historia: "Abolicionista e construtor histórico de Guarapuava, Belmiro de Miranda nasceu em Alagoas em 1825, filho da escrava Lucinda, comprada na costa leste da África.\n\nDe profissão mestre de obras e exímio em taipa de pilão, foi trazido a Guarapuava pelo bandeirante Pedro de Siqueira Côrtes para erguer o primeiro palacete da cidade, no pátio da Matriz. Homem de constituição robusta e extraordinária inteligência para os serviços de pedreiro e carpinteiro, Belmiro obteve a rara permissão de trabalhar para terceiros aos domingos, dias santificados e em noites enluaradas, das 22h às 24h.\n\nCom trabalho árduo e o fruto do seu suor, acumulou o dinheiro necessário para comprar a própria alforria. Em 1880, conseguiu recursos para libertar também sua futura esposa, Ezidia Efigênia. Ao lado de Ezidia, exímia cozinheira, passou a investir cada centavo na libertação de antigos companheiros, conquistando a alforria de mais de 50 escravizados em Guarapuava e orientando-os na vida em liberdade.\n\nMesmo sem saber ler ou escrever, Belmiro mantinha contínua correspondência com o líder abolicionista nacional José do Patrocínio através de amigos. Decorava palavra por palavra das cartas recebidas para discursar ao povo nas senzalas e em praça pública, mantendo acesa a chama da liberdade.\n\nEm 13 de maio de 1888, recebeu por telégrafo a sonhada notícia da Abolição da Escravatura no Brasil e organizou grandes festejos cívicos ao lado do Visconde de Guarapuava. Posteriormente, fundou o pioneiro Hotel do Comércio e criou o 'Caixão da Misericórdia' para garantir sepultamento digno e gratuito aos indigentes.\n\nBelmiro de Miranda faleceu em 1910, deixando o legado eterno de um homem que deixou de ser cativo de um senhor para tornar-se cativo do ideal de servir à humanidade.",
     corFundo: "#1c1206"
   }
 ];
 
+function formatMillis(ms: number) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
 export default function Lendas() {
-  const [speakingId, setSpeakingId] = useState<number | null>(null);
+  const soundRef = useRef<Audio.Sound | null>(null);
+  const [playingId, setPlayingId] = useState<number | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [lendaSelecionada, setLendaSelecionada] = useState<LendaItem | null>(null);
-  const [naturalVoiceIdentifier, setNaturalVoiceIdentifier] = useState<string | undefined>(undefined);
 
-  // Buscar a melhor voz humana em português disponível no aparelho
   useEffect(() => {
-    async function selectBestVoice() {
-      try {
-        const voices = await Speech.getAvailableVoicesAsync();
-        const ptVoices = voices.filter(
-          (v) => v.language.startsWith("pt") || v.language === "pt-BR" || v.language === "pt_BR"
-        );
-        
-        // Priorizar vozes neurais / naturais do Google ou Enhanced do iOS/Android
-        const bestVoice = ptVoices.find(
-          (v) =>
-            v.identifier.includes("network") ||
-            v.identifier.includes("natural") ||
-            v.identifier.includes("premium") ||
-            v.quality === Speech.VoiceQuality.Enhanced
-        ) || ptVoices[0];
-
-        if (bestVoice) {
-          setNaturalVoiceIdentifier(bestVoice.identifier);
-        }
-      } catch (err) {
-        // Fallback gracioso
-      }
-    }
-    selectBestVoice();
-
     return () => {
-      Speech.stop();
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+      }
     };
   }, []);
 
-  const toggleSpeech = (item: LendaItem) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (speakingId === item.id) {
-      Speech.stop();
-      setSpeakingId(null);
-    } else {
-      Speech.stop();
-      setSpeakingId(item.id);
-      
-      // Calibração de fala humana: ritmo pausado, entonação calma e voz selecionada
-      Speech.speak(`${item.titulo}. Narrado a partir de ${item.autor}. ${item.historia}`, {
-        language: "pt-BR",
-        voice: naturalVoiceIdentifier,
-        rate: 0.88, // Ritmo confortável e pausado de audiolivro
-        pitch: 0.98, // Tom natural e acústico
-        onDone: () => setSpeakingId(null),
-        onStopped: () => setSpeakingId(null),
-        onError: () => setSpeakingId(null),
-      });
+  async function toggleAudio(item: LendaItem) {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+    // Se já está tocando a mesma lenda
+    if (playingId === item.id && soundRef.current) {
+      if (isPlaying) {
+        await soundRef.current.pauseAsync();
+        setIsPlaying(false);
+      } else {
+        await soundRef.current.playAsync();
+        setIsPlaying(true);
+      }
+      return;
     }
-  };
+
+    // Se for uma lenda diferente, para e descarrega a anterior
+    if (soundRef.current) {
+      await soundRef.current.stopAsync();
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
+    }
+
+    try {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        item.audioFile,
+        { shouldPlay: true }
+      );
+      soundRef.current = newSound;
+      setPlayingId(item.id);
+      setIsPlaying(true);
+
+      newSound.setOnPlaybackStatusUpdate((status) => {
+        if (!status.isLoaded) return;
+        setPosition(status.positionMillis);
+        if (status.durationMillis) {
+          setDuration(status.durationMillis);
+        }
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+          setPosition(0);
+        }
+      });
+    } catch (err) {
+      console.log("Erro ao carregar áudio:", err);
+    }
+  }
+
+  async function pararAudio() {
+    if (soundRef.current) {
+      await soundRef.current.stopAsync();
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
+    }
+    setPlayingId(null);
+    setIsPlaying(false);
+    setPosition(0);
+    setDuration(0);
+  }
 
   const abrirLeitura = (item: LendaItem) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -121,10 +149,6 @@ export default function Lendas() {
 
   const fecharLeitura = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (speakingId) {
-      Speech.stop();
-      setSpeakingId(null);
-    }
     setLendaSelecionada(null);
   };
 
@@ -143,14 +167,16 @@ export default function Lendas() {
         </View>
         <Text style={styles.headerTitle}>Contos e Memórias</Text>
         <Text style={styles.headerSubtitle}>
-          Toque para abrir o leitor imersivo ou ouça a narração em áudio.
+          Histórias com narração profissional em alta definição e leitor imersivo.
         </Text>
       </View>
 
       {/* LISTA DE CARDS DE LENDAS */}
       <View style={styles.list}>
         {listaLendas.map((item, index) => {
-          const isPlaying = speakingId === item.id;
+          const isItemActive = playingId === item.id;
+          const progressPercent = (isItemActive && duration > 0) ? (position / duration) * 100 : 0;
+
           return (
             <MotiView 
               key={item.id}
@@ -162,7 +188,7 @@ export default function Lendas() {
                 style={[
                   styles.card, 
                   { backgroundColor: item.corFundo },
-                  isPlaying && styles.cardActivePlaying
+                  isItemActive && isPlaying && styles.cardActivePlaying
                 ]}
                 onPress={() => abrirLeitura(item)}
               >
@@ -171,17 +197,17 @@ export default function Lendas() {
                     <Text style={styles.tagPillText}>{item.tag}</Text>
                   </View>
 
-                  {/* BOTÃO NARRAR */}
+                  {/* BOTÃO TOCAR ÁUDIO */}
                   <TouchableOpacity 
-                    style={[styles.speechPill, isPlaying && styles.speechPillActive]}
+                    style={[styles.audioPill, isItemActive && isPlaying && styles.audioPillActive]}
                     onPress={(e) => {
                       e.stopPropagation();
-                      toggleSpeech(item);
+                      toggleAudio(item);
                     }}
-                    activeOpacity={0.7}
+                    activeOpacity={0.75}
                   >
-                    <Text style={[styles.speechPillText, isPlaying && styles.speechPillTextActive]}>
-                      {isPlaying ? "⏹ PAUSAR VOZ" : "🎙️ OUVIR HISTÓRIA"}
+                    <Text style={[styles.audioPillText, isItemActive && isPlaying && styles.audioPillTextActive]}>
+                      {isItemActive && isPlaying ? "⏸ PAUSAR ÁUDIO" : "🎙️ OUVIR NARRAÇÃO"}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -192,6 +218,19 @@ export default function Lendas() {
                 <Text style={styles.cardPreview} numberOfLines={3}>
                   {item.historia}
                 </Text>
+
+                {/* BARRA DE PROGRESSO DO ÁUDIO SE ATIVO */}
+                {isItemActive && (
+                  <View style={styles.cardAudioProgressWrapper}>
+                    <View style={styles.progressBarBackground}>
+                      <View style={[styles.progressBarFill, { width: `${progressPercent}%` }]} />
+                    </View>
+                    <View style={styles.timeRow}>
+                      <Text style={styles.timeText}>{formatMillis(position)}</Text>
+                      <Text style={styles.timeText}>{formatMillis(duration)}</Text>
+                    </View>
+                  </View>
+                )}
                 
                 <View style={styles.divider} />
                 
@@ -219,7 +258,9 @@ export default function Lendas() {
       >
         <View style={styles.modalOverlay}>
           {lendaSelecionada && (() => {
-            const isModalPlaying = speakingId === lendaSelecionada.id;
+            const isModalActive = playingId === lendaSelecionada.id;
+            const modalProgress = (isModalActive && duration > 0) ? (position / duration) * 100 : 0;
+
             return (
               <MotiView 
                 from={{ opacity: 0, translateY: 40 }}
@@ -233,25 +274,43 @@ export default function Lendas() {
                   </TouchableOpacity>
 
                   <TouchableOpacity 
-                    style={[styles.modalSpeechButton, isModalPlaying && styles.modalSpeechButtonActive]}
-                    onPress={() => toggleSpeech(lendaSelecionada)}
+                    style={[styles.modalAudioButton, isModalActive && isPlaying && styles.modalAudioButtonActive]}
+                    onPress={() => toggleAudio(lendaSelecionada)}
                     activeOpacity={0.8}
                   >
-                    <Text style={[styles.modalSpeechButtonText, isModalPlaying && styles.modalSpeechButtonTextActive]}>
-                      {isModalPlaying ? "⏹ PARAR VOZ" : "🎙️ OUVIR EM VOZ ALTA"}
+                    <Text style={[styles.modalAudioButtonText, isModalActive && isPlaying && styles.modalAudioButtonTextActive]}>
+                      {isModalActive && isPlaying ? "⏸ PAUSAR NARRADOR" : "🎙️ OUVIR EM VOZ ALTA"}
                     </Text>
                   </TouchableOpacity>
                 </View>
 
-                {/* DOCK DE STATUS DE NARRAÇÃO */}
-                {isModalPlaying && (
+                {/* DOCK DE STATUS DO ÁUDIO */}
+                {isModalActive && (
                   <MotiView
                     from={{ opacity: 0, scaleY: 0.8 }}
                     animate={{ opacity: 1, scaleY: 1 }}
-                    style={styles.narrationStatusDock}
+                    style={styles.narrationDock}
                   >
-                    <View style={styles.pulseDot} />
-                    <Text style={styles.narrationStatusText}>Narrador de voz natural ativado (Audiolivro)...</Text>
+                    <View style={styles.narrationDockHeader}>
+                      <View style={styles.liveIndicator}>
+                        <View style={styles.pulseDot} />
+                        <Text style={styles.narrationDockStatus}>
+                          {isPlaying ? "Reproduzindo narração em estúdio..." : "Narração pausada"}
+                        </Text>
+                      </View>
+                      <TouchableOpacity onPress={pararAudio} activeOpacity={0.7}>
+                        <Text style={styles.stopButtonText}>PARAR ✕</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* BARRA DE PROGRESSO */}
+                    <View style={styles.modalProgressBarBackground}>
+                      <View style={[styles.modalProgressBarFill, { width: `${modalProgress}%` }]} />
+                    </View>
+                    <View style={styles.modalTimeRow}>
+                      <Text style={styles.modalTimeText}>{formatMillis(position)}</Text>
+                      <Text style={styles.modalTimeText}>{formatMillis(duration)}</Text>
+                    </View>
                   </MotiView>
                 )}
 
@@ -342,7 +401,7 @@ const styles = StyleSheet.create({
   },
   cardActivePlaying: {
     borderColor: colors.gold,
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.35,
   },
   cardHeaderRow: {
     flexDirection: 'row',
@@ -362,7 +421,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 0.8,
   },
-  speechPill: {
+  audioPill: {
     backgroundColor: colors.goldLight,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -370,15 +429,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.cardBorder,
   },
-  speechPillActive: {
+  audioPillActive: {
     backgroundColor: colors.gold,
   },
-  speechPillText: {
+  audioPillText: {
     color: colors.goldBright,
     fontSize: 11,
     fontWeight: '800',
   },
-  speechPillTextActive: {
+  audioPillTextActive: {
     color: colors.textDark,
   },
   cardTitle: {
@@ -397,6 +456,36 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 13,
     lineHeight: 20,
+  },
+  cardAudioProgressWrapper: {
+    marginTop: 14,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    padding: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.cardBorderSubtle,
+  },
+  progressBarBackground: {
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: colors.goldBright,
+    borderRadius: 2,
+  },
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 6,
+  },
+  timeText: {
+    color: colors.goldChampagne,
+    fontSize: 10,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
   },
   divider: {
     height: 1,
@@ -472,7 +561,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
-  modalSpeechButton: {
+  modalAudioButton: {
     backgroundColor: colors.gold,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -482,30 +571,35 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
-  modalSpeechButtonActive: {
-    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-    borderWidth: 1,
-    borderColor: colors.ruby,
+  modalAudioButtonActive: {
+    backgroundColor: colors.goldBright,
   },
-  modalSpeechButtonText: {
+  modalAudioButtonText: {
     color: colors.textDark,
     fontSize: 11,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
-  modalSpeechButtonTextActive: {
-    color: colors.ruby,
+  modalAudioButtonTextActive: {
+    color: colors.textDark,
   },
-  narrationStatusDock: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  narrationDock: {
     backgroundColor: 'rgba(245, 158, 11, 0.1)',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 12,
+    padding: 14,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: colors.cardBorder,
     marginBottom: 14,
+  },
+  narrationDockHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  liveIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   pulseDot: {
@@ -514,10 +608,38 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.gold,
   },
-  narrationStatusText: {
+  narrationDockStatus: {
     color: colors.goldChampagne,
     fontSize: 11,
     fontWeight: '700',
+  },
+  stopButtonText: {
+    color: colors.ruby,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
+  modalProgressBarBackground: {
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  modalProgressBarFill: {
+    height: '100%',
+    backgroundColor: colors.goldBright,
+    borderRadius: 2,
+  },
+  modalTimeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 6,
+  },
+  modalTimeText: {
+    color: colors.goldChampagne,
+    fontSize: 11,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
   },
   readerScroll: {
     paddingBottom: 40,
