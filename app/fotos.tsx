@@ -61,6 +61,51 @@ const marcosHistoricos = [
     imagemAtual: require("../assets/images/historico/lago_novo.jpg"),
     fontes: "Guarapuava Histórica / Fotografia Contemporânea",
     ano: "Evolução Urbana"
+  },
+  {
+    id: 6,
+    titulo: "Praça 9 de Dezembro",
+    descricao: "Coração cívico e marco da fundação em 1819. Famosa pelo histórico registro da grande nevasca de 1965 com a Catedral ao fundo.",
+    imagemAntiga: require("../assets/images/historico/praca9_antigo.jpg"),
+    imagemAtual: require("../assets/images/historico/praca9_novo.jpg"),
+    fontes: "Projeto Memória Fotográfica / Acervo Municipal",
+    ano: "1965 (Nevasca) vs Atualidade"
+  },
+  {
+    id: 7,
+    titulo: "Rua XV de Novembro",
+    descricao: "Da via com paralelepípedos, postes coloniais e veículos dos anos 50 ao vibrante calçadão comercial a céu aberto no centro.",
+    imagemAntiga: require("../assets/images/historico/rua15_antigo.jpg"),
+    imagemAtual: require("../assets/images/historico/rua15_novo.jpg"),
+    fontes: "Paraná Histórica / Memória Urbana",
+    ano: "Anos 50/60 vs Calçadão Atual"
+  },
+  {
+    id: 8,
+    titulo: "Estação Ferroviária (1954)",
+    descricao: "A chegada da locomotiva a vapor (Maria Fumaça) em 1954 que impulsionou a economia do 3º Planalto e deu origem à Vila Ferroviária.",
+    imagemAntiga: require("../assets/images/historico/estacao_antigo.jpg"),
+    imagemAtual: require("../assets/images/historico/estacao_novo.jpg"),
+    fontes: "RVPSC / Arquivo Histórico Ferroviário",
+    ano: "1954 (Inauguração) vs Patrimônio"
+  },
+  {
+    id: 9,
+    titulo: "Santuário de Schoenstatt & Praça da Fé",
+    descricao: "Do espaço original de oração e silêncio à imponente Praça da Fé e Santuário da Mãe Peregrina, polo de romaria de todo o Sul.",
+    imagemAntiga: require("../assets/images/historico/santuario_antigo.jpg"),
+    imagemAtual: require("../assets/images/historico/santuario_novo.jpg"),
+    fontes: "Diocese de Guarapuava / Secretaria de Turismo",
+    ano: "Fé & Peregrinação"
+  },
+  {
+    id: 10,
+    titulo: "Colônia Entre Rios (Suábios do Danúbio)",
+    descricao: "Da chegada das primeiras famílias de imigrantes em 1951 na antiga terra virgem ao complexo cooperativista e cervejeiro mundial da Agrária.",
+    imagemAntiga: require("../assets/images/historico/entrerios_antigo.jpg"),
+    imagemAtual: require("../assets/images/historico/entrerios_novo.jpg"),
+    fontes: "Fundação Cultural Suábio-Brasileira / Acervo Entre Rios",
+    ano: "1951 (Pioneirismo) vs Cooperativismo"
   }
 ];
 
